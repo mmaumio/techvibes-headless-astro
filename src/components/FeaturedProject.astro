@@ -6,7 +6,7 @@ const { project, href = project.url ?? '/work/' } = Astro.props;
 const external = href.startsWith('http');
 ---
 <a data-reveal href={href} class="featured-work" rel={external ? 'noopener' : undefined}>
-  <div class="featured-work__media"><ProjectImage project={project} /></div>
+  <div class="featured-work__media"><ProjectImage project={project} large /></div>
   <div class="featured-work__body">
     <span class="mono featured-work__kicker">Featured case study</span>
     <h3 class="h3 featured-work__title">{project.name}</h3>

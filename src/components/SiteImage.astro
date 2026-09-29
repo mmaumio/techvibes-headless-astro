@@ -1,0 +1,69 @@
+---
+// Fills its (position: relative) parent with an image from src/assets/images/,
+// or the branded placeholder when no file with that name exists yet.
+//   fit="cover": photos, cropped to fill the frame
+//   fit="logo":  logos and app icons, shown whole and centred on white
+import { Image } from 'astro:assets';
+import { siteImage } from '../lib/images';
+
+interface Props {
+  name: string;
+  alt: string;
+  fit?: 'cover' | 'logo';
+  /** CSS object-position for cover images, e.g. "50% 25%" to keep faces in frame */
+  position?: string;
+  /** Rounded corners for app icons */
+  rounded?: boolean;
+  /** Largest on-screen size of a logo, in px */
+  logoSize?: number;
+  sizes?: string;
+  eager?: boolean;
+}
+
+const {
+  name, alt, fit = 'cover', position = '50% 50%', rounded = false, logoSize = 220,
+  sizes = '(min-width: 1240px) 600px, 100vw', eager = false,
+} = Astro.props;
+
+const img = siteImage(name);
+const widths = img ? [400, 640, 960, 1280].filter((w) => w < img.width).concat(img.width) : [];
+const logoWidth = img ? Math.min(img.width, logoSize * 2) : 0;
+---
+{!img ? (
+  <div class="placeholder" role="img" aria-label={alt} data-slot={name}>
+    <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#mk-d" fill="url(#tvg)"></use></svg>
+  </div>
+) : fit === 'cover' ? (
+  <Image
+    src={img}
+    alt={alt}
+    widths={widths}
+    sizes={sizes}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding="async"
+    class="si-cover"
+    style={`object-position:${position}`}
+  />
+) : (
+  <div class="si-logo">
+    <Image
+      src={img}
+      alt={alt}
+      width={logoWidth}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      class:list={['si-logo__img', { 'si-logo__img--rounded': rounded }]}
+      style={`max-width:min(64%, ${Math.min(img.width, logoSize)}px)`}
+    />
+  </div>
+)}
+
+<style>
+  .si-cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .si-logo {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: #FFFFFF; border-bottom: 1px solid #EEF2F3; padding: 12%;
+  }
+  .si-logo__img { width: auto; height: auto; max-height: 100%; object-fit: contain; display: block; }
+  .si-logo__img--rounded { border-radius: 22%; box-shadow: 0 12px 28px -14px rgba(12,26,36,.35); }
+</style>

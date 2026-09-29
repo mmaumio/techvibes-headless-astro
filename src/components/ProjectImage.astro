@@ -1,10 +1,18 @@
 ---
+// Project image: src/assets/images/work-<project-name>.(jpg|png|webp).
+// Logos are shown whole on white; set logo: false in work.ts for a
+// screenshot or photo that should fill the frame instead.
 import type { Project } from '../data/work';
-interface Props { project: Project }
-const { project } = Astro.props;
+import SiteImage from './SiteImage.astro';
+import { slugify } from '../lib/images';
+
+interface Props { project: Project; large?: boolean }
+const { project, large = false } = Astro.props;
+const name = `work-${slugify(project.name)}`;
 ---
-<div class="placeholder" role={project.image ? undefined : 'img'} aria-label={project.image ? undefined : `${project.name} project image`}>
-  {project.image
-    ? <img src={project.image} alt={`${project.name} project`} loading="lazy" decoding="async" />
-    : <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#mk-d" fill="url(#tvg)"></use></svg>}
-</div>
+<SiteImage
+  name={name}
+  alt={`${project.name} logo`}
+  fit={project.logo === false ? 'cover' : 'logo'}
+  logoSize={large ? 300 : 200}
+/>

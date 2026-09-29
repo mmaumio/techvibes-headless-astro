@@ -24,8 +24,25 @@ block-editor pages you publish in WordPress appear at the same URL here.
 - **Case studies**: `src/data/work.ts` (add stack, outcome, url and image as you confirm them; empty fields are hidden)
 - **Service pages**: `src/data/services-content.ts`
 - **Menu, footer, email, address, testimonials**: `src/data/site.ts`
-- **Team photos**: put files in `public/team/` and set `photo` in `src/pages/about.astro`
+- **Images**: see Images below
 - **Homepage**: `src/pages/index.astro` (converted from the Claude Design file)
+
+## Images
+
+Site images live in `src/assets/images/` and are matched by file name. Upload a
+file with the right name (jpg, png, webp or avif, any size) and it appears in
+that spot on the next build; Astro resizes it and converts it to WebP. Missing
+files show the branded placeholder.
+
+| File name | Where |
+|---|---|
+| `founder` | Homepage, Meet the founder |
+| `product-exclusive-addons`, `product-darkify`, `product-stockpulse` | Homepage product cards (icons/logos) |
+| `work-<project-name>` e.g. `work-swiglife`, `work-texas-school-alliance` | Selected work and Work page (logos; set `logo: false` in `src/data/work.ts` for screenshots) |
+| `team-albab`, `team-muntasir`, `team-khairul` | About page team photos |
+
+To replace an image, upload a new file with the same name (delete the old one
+if the extension differs).
 
 ## Local development
 
