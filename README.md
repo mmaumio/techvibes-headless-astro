@@ -13,7 +13,8 @@ listings are pulled from its REST API at build time.
 | Blog posts (`/post-slug/`) and `/blog/` | WordPress posts |
 | Privacy, Terms, Cookie, Accessibility | WordPress pages (block editor) |
 | Job listings (`/job/slug/`) | WP Job Manager (`/wp-json/wp/v2/job-listings`) |
-| Schedule a meeting, Customer Cabinet | Still on WordPress (need its plugins) |
+| Schedule a meeting (`/schedule-a-meeting/`) | Calendly inline embed, link set in `src/data/site.ts` (`calendlyUrl`) |
+| Customer Cabinet | Still on WordPress |
 
 WordPress pages built with Elementor are skipped automatically. New
 block-editor pages you publish in WordPress appear at the same URL here.
@@ -126,6 +127,5 @@ Cache > REST API) so rebuilds get fresh content.
 
 1. Move WordPress to `cms.techvibesit.com` and set its Site URL there.
 2. Set the build variables `WP_URL=https://cms.techvibesit.com` and `SITE_NOINDEX=false`.
-3. Update `company.scheduleUrl` in `src/data/site.ts` if booking stays on WordPress.
-4. Add `techvibesit.com` (and `www`) under the Worker's Domains & Routes.
-5. Redeploy, then check the sitemap at `/sitemap-index.xml` and submit it in Search Console.
+3. Add `techvibesit.com` (and `www`) under the Worker's Domains & Routes.
+4. Redeploy, then check the sitemap at `/sitemap-index.xml` and submit it in Search Console.

@@ -14,8 +14,9 @@ export const company = {
   address: 'Innovation Centre and Business Base, 110 Great Marlings, Butterfield, Luton, LU2 8DL, United Kingdom',
   linkedin: 'https://www.linkedin.com/company/techvibesit',
   facebook: 'https://www.facebook.com/techvibesit/',
-  // Booking still runs on the WordPress appointment plugin for now.
-  scheduleUrl: `${WP_URL}/schedule-a-meeting/`,
+  // Meetings are booked through Calendly, embedded on /schedule-a-meeting/.
+  scheduleUrl: '/schedule-a-meeting/',
+  calendlyUrl: 'https://calendly.com/muntasiraumio/30min',
 };
 
 // Search engines are kept away from the test subdomain until cutover.

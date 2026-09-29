@@ -1,0 +1,170 @@
+---
+// Book a call: Calendly's inline widget, embedded in the site's design.
+// The Calendly link lives in src/data/site.ts (company.calendlyUrl).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { company } from '../data/site';
+
+const embedUrl = new URL(company.calendlyUrl);
+embedUrl.searchParams.set('hide_gdpr_banner', '1');
+embedUrl.searchParams.set('hide_event_type_details', '1');
+// Brand colours (applied by Calendly on paid plans, ignored on free)
+embedUrl.searchParams.set('primary_color', '1b9c85');
+embedUrl.searchParams.set('text_color', '0f1e2a');
+embedUrl.searchParams.set('background_color', 'ffffff');
+
+const expect = [
+  { title: '30 minutes', text: 'A focused video call, at a time that suits you.' },
+  { title: 'Your project, not a pitch', text: 'We talk through your goals, platform, timeline and budget.' },
+  { title: 'Clear next steps', text: 'You leave with practical advice and, if it is a fit, a plan and quote.' },
+];
+---
+<BaseLayout
+  title="Schedule a Meeting"
+  description="Book a free 30-minute call with TechVibes IT to discuss your website, store, app or AI project."
+>
+  <PageHero
+    eyebrow="Schedule a Meeting"
+    title="Let's talk about <span class='gradient-text'>your project.</span>"
+    intro="Want to discuss your project? Pick a time that works best for you and let's dive into your ideas, budget, and next steps."
+  />
+
+  <section>
+    <div class="container section booking">
+      <aside data-reveal class="booking__aside">
+        <span class="eyebrow">What to expect</span>
+        <ol class="booking__list">
+          {expect.map((item, i) => (
+            <li>
+              <span class="mono booking__n">{String(i + 1).padStart(2, '0')}</span>
+              <div class="stack" style="gap:6px">
+                <h2 class="h3 booking__title">{item.title}</h2>
+                <p>{item.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <div class="card booking__alt">
+          <p>Prefer email? Write to <a href={`mailto:${company.email}`}>{company.email}</a> or use the <a href="/contact/">contact form</a>.</p>
+        </div>
+      </aside>
+
+      <div class="card booking__panel">
+        <div class="booking__done" data-booked hidden role="status">
+          <span class="eyebrow eyebrow--dot">Booked</span>
+          <h2 class="h3" style="font-size:clamp(24px,2.6vw,32px)">You're booked in.</h2>
+          <p>Thanks for scheduling a call. A confirmation with the meeting link is on its way to your inbox.</p>
+          <a href="/" class="btn btn--dark" style="align-self:flex-start">Back to homepage <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+        <div class="booking__widget" data-calendly data-url={embedUrl.href}>
+          <div class="booking__loading" data-loading>
+            <span class="booking__spinner" aria-hidden="true"></span>
+            Loading available times…
+          </div>
+        </div>
+        <p class="booking__fallback">
+          Calendar not showing? <a href={company.calendlyUrl} target="_blank" rel="noopener">Open the booking page in a new tab</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .booking {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: clamp(32px, 5vw, 64px); align-items: start;
+    padding-top: clamp(48px, 7vw, 88px);
+  }
+  @media (max-width: 960px) { .booking { grid-template-columns: minmax(0, 1fr); } }
+
+  .booking__aside { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 110px; }
+  @media (max-width: 960px) { .booking__aside { position: static; order: 2; } }
+  .booking__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .booking__list li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; padding: 20px 0; border-top: 1px solid var(--line); }
+  .booking__list li:last-child { border-bottom: 1px solid var(--line); }
+  .booking__n { font-size: 12.5px; color: var(--teal-dark); padding-top: 4px; }
+  .booking__title { font-size: 20px; letter-spacing: -0.02em; }
+  .booking__list p, .booking__alt p { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--text); }
+  .booking__alt { padding: 20px 22px; background: var(--soft); }
+
+  .booking__panel { padding: 8px; overflow: hidden; }
+  .booking__widget { position: relative; min-width: 280px; height: 720px; }
+  @media (max-width: 640px) { .booking__widget { height: 1050px; } }
+  .booking__widget iframe { border-radius: 12px; }
+  .booking__loading {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+    font-size: 15px; color: var(--muted);
+  }
+  .booking__spinner {
+    width: 28px; height: 28px; border-radius: 50%; border: 3px solid #DDE7E6; border-top-color: var(--teal);
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .booking__fallback { margin: 0; padding: 10px 16px 12px; font-size: 14px; color: var(--muted); text-align: center; }
+
+  .booking__done { padding: clamp(28px, 5vw, 56px); display: flex; flex-direction: column; gap: 16px; }
+  .booking__done[hidden] { display: none; }
+  .booking__done p { margin: 0; font-size: 17px; line-height: 1.6; color: var(--text); max-width: 520px; }
+</style>
+
+<script>
+  declare global {
+    interface Window { Calendly?: { initInlineWidget: (o: { url: string; parentElement: Element; prefill?: Record<string, string> }) => void } }
+  }
+
+  const box = document.querySelector<HTMLElement>('[data-calendly]');
+  const SCRIPT = 'https://assets.calendly.com/assets/external/widget.js';
+
+  function loadScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (window.Calendly) return resolve();
+      const s = document.createElement('script');
+      s.src = SCRIPT;
+      s.async = true;
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error('Calendly could not load'));
+      document.head.appendChild(s);
+    });
+  }
+
+  async function mount() {
+    if (!box || box.dataset.mounted) return;
+    box.dataset.mounted = '1';
+    // Pass name and email through if they arrive in the page URL (?name=&email=).
+    const params = new URLSearchParams(location.search);
+    const prefill: Record<string, string> = {};
+    if (params.get('name')) prefill.name = params.get('name')!;
+    if (params.get('email')) prefill.email = params.get('email')!;
+    try {
+      await loadScript();
+      box.querySelector('[data-loading]')?.remove();
+      window.Calendly!.initInlineWidget({ url: box.dataset.url!, parentElement: box, prefill });
+    } catch {
+      const loading = box.querySelector<HTMLElement>('[data-loading]');
+      if (loading) loading.textContent = 'The calendar could not load. Please use the link below.';
+    }
+  }
+
+  // Load Calendly only when the calendar is about to be seen.
+  if (box) {
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        if (entries.some((e) => e.isIntersecting)) { io.disconnect(); mount(); }
+      }, { rootMargin: '300px' });
+      io.observe(box);
+    } else {
+      mount();
+    }
+  }
+
+  // Show a confirmation once a meeting is booked.
+  window.addEventListener('message', (e) => {
+    if (e.origin !== 'https://calendly.com') return;
+    if ((e.data as { event?: string })?.event === 'calendly.event_scheduled') {
+      const done = document.querySelector<HTMLElement>('[data-booked]');
+      if (done) done.hidden = false;
+      document.querySelector('.booking__panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+</script>
