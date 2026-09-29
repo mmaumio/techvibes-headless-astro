@@ -160,3 +160,15 @@ Cache > REST API) so rebuilds get fresh content.
 2. Set the build variables `WP_URL=https://cms.techvibesit.com` and `SITE_NOINDEX=false`.
 3. Add `techvibesit.com` (and `www`) under the Worker's Domains & Routes.
 4. Redeploy, then check the sitemap at `/sitemap-index.xml` and submit it in Search Console.
+
+## Cookie consent
+
+`src/components/CookieConsent.astro` runs [vanilla-cookieconsent](https://cookieconsent.orestbida.com/) (MIT, bundled, no external service). It follows UK GDPR and PECR: nothing non-essential loads before consent, "Accept" and "Reject" carry equal weight, and "Cookie settings" in the footer reopens the choices at any time.
+
+- **Strictly necessary:** the consent cookie (`tv_consent`, 6 months). The comment "Save my name" box stores details in the browser only when ticked.
+- **Functional:** Calendly on `/schedule-a-meeting/`. Until it's allowed, the page shows an "Allow and show calendar" panel and a link to book on Calendly directly.
+
+Adding something that sets cookies (Google Analytics, a chat widget, a video embed):
+1. Add a category (for example `analytics: {}`) and a section describing it in `CookieConsent.astro`.
+2. Load the script only after consent: `import { acceptedCategory } from 'vanilla-cookieconsent'`, check `acceptedCategory('analytics')`, and listen for the `cc:onConsent` / `cc:onChange` window events.
+3. Increase `revision` so every visitor is asked again, and update the Cookie Policy page in WordPress.

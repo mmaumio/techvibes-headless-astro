@@ -37,6 +37,7 @@ const companyLinks = [
       <span>© {year} {company.legalName}. Registered in England &amp; Wales, company no. {company.companyNo}.</span>
       <div class="site-footer__legal">
         {legal.map((l) => <a href={l.href}>{l.label}</a>)}
+        <button type="button" class="site-footer__cookies" data-cc="show-preferencesModal">Cookie settings</button>
       </div>
     </div>
   </div>
@@ -69,4 +70,7 @@ const companyLinks = [
   .site-footer__legal { display: flex; flex-wrap: wrap; gap: 8px 24px; }
   .site-footer__legal a { color: var(--muted); }
   .site-footer__legal a:hover { color: var(--teal-dark); }
+  .site-footer__cookies { all: unset; cursor: pointer; color: var(--muted); }
+  .site-footer__cookies:hover { color: var(--teal-dark); }
+  .site-footer__cookies:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
 </style>

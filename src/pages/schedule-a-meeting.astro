@@ -61,6 +61,15 @@ const expect = [
             <span class="booking__spinner" aria-hidden="true"></span>
             Loading available times…
           </div>
+          <div class="booking__gate" data-consent-gate hidden>
+            <h2 class="h3 booking__gate-title">Show the booking calendar</h2>
+            <p>The calendar is provided by Calendly, which sets its own cookies. Allow it to pick a time right here, or book on Calendly's site instead.</p>
+            <div class="booking__gate-actions">
+              <button type="button" class="btn btn--dark" data-allow-calendly>Allow and show calendar</button>
+              <a href={company.calendlyUrl} target="_blank" rel="noopener" class="btn btn--outline">Book on Calendly <span class="arrow" aria-hidden="true">↗</span></a>
+            </div>
+            <button type="button" class="booking__gate-prefs" data-cc="show-preferencesModal">Manage cookie preferences</button>
+          </div>
         </div>
         <p class="booking__fallback">
           Calendar not showing? <a href={company.calendlyUrl} target="_blank" rel="noopener">Open the booking page in a new tab</a>.
@@ -101,6 +110,17 @@ const expect = [
     animation: spin .8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+  .booking__gate {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px; padding: 32px; text-align: center; background: var(--soft); border-radius: 12px;
+  }
+  .booking__gate[hidden] { display: none; }
+  .booking__gate-title { font-size: clamp(22px, 2.4vw, 28px); letter-spacing: -0.02em; }
+  .booking__gate p { margin: 0; max-width: 440px; font-size: 16px; line-height: 1.6; color: var(--text); }
+  .booking__gate-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .booking__gate-prefs { all: unset; cursor: pointer; font-size: 14px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+  .booking__gate-prefs:hover { color: var(--teal-dark); }
+  .booking__gate-prefs:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
   .booking__fallback { margin: 0; padding: 10px 16px 12px; font-size: 14px; color: var(--muted); text-align: center; }
 
   .booking__done { padding: clamp(28px, 5vw, 56px); display: flex; flex-direction: column; gap: 16px; }
@@ -113,7 +133,11 @@ const expect = [
     interface Window { Calendly?: { initInlineWidget: (o: { url: string; parentElement: Element; prefill?: Record<string, string> }) => void } }
   }
 
+  import { acceptedCategory, acceptCategory, getUserPreferences } from 'vanilla-cookieconsent';
+
   const box = document.querySelector<HTMLElement>('[data-calendly]');
+  const gate = document.querySelector<HTMLElement>('[data-consent-gate]');
+  const loading = () => box?.querySelector<HTMLElement>('[data-loading]');
   const SCRIPT = 'https://assets.calendly.com/assets/external/widget.js';
 
   function loadScript(): Promise<void> {
@@ -141,13 +165,16 @@ const expect = [
       box.querySelector('[data-loading]')?.remove();
       window.Calendly!.initInlineWidget({ url: box.dataset.url!, parentElement: box, prefill });
     } catch {
-      const loading = box.querySelector<HTMLElement>('[data-loading]');
-      if (loading) loading.textContent = 'The calendar could not load. Please use the link below.';
+      const l = loading();
+      if (l) l.textContent = 'The calendar could not load. Please use the link below.';
     }
   }
 
   // Load Calendly only when the calendar is about to be seen.
-  if (box) {
+  let watching = false;
+  function watch() {
+    if (!box || watching) return;
+    watching = true;
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
         if (entries.some((e) => e.isIntersecting)) { io.disconnect(); mount(); }
@@ -157,6 +184,26 @@ const expect = [
       mount();
     }
   }
+
+  // Calendly sets its own cookies, so it waits for the "functional" cookie choice.
+  function sync() {
+    if (!box) return;
+    const allowed = acceptedCategory('functional');
+    if (gate) gate.hidden = allowed;
+    const l = loading();
+    if (l) l.hidden = !allowed;
+    if (allowed) watch();
+    else if (box.dataset.mounted) location.reload(); // consent withdrawn: remove the embed
+  }
+
+  document.querySelector('[data-allow-calendly]')?.addEventListener('click', () => {
+    const current = getUserPreferences().acceptedCategories ?? [];
+    acceptCategory([...new Set([...current, 'functional'])]);
+    sync();
+  });
+  window.addEventListener('cc:onConsent', sync);
+  window.addEventListener('cc:onChange', sync);
+  sync();
 
   // Show a confirmation once a meeting is booked.
   window.addEventListener('message', (e) => {
