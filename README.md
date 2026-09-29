@@ -52,8 +52,12 @@ Node 22.12 or newer is required.
    - Contact form: `SMTP_USER` and `SMTP_PASS` (secrets), `CONTACT_TO`. See Contact form below.
 5. Custom domains: keep `astro.techvibesit.com` attached to the project.
 
-If the build cannot reach WordPress on Cloudflare, it fails instead of
-publishing a site with missing posts. Locally it only warns.
+The build log lists what it pulled from WordPress, e.g.
+`[wp] Loaded 3 item(s) from posts`. If WordPress can't be reached (or a
+firewall returns a block page instead of JSON), the build retries, then
+stops with `[wp] Could not load ...` and the reason, so the last good
+deployment stays live. `npm run dev` only warns. Set `WP_ALLOW_EMPTY=true`
+to deliberately build without WordPress content.
 
 ## Contact form
 

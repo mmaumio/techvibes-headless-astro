@@ -21,6 +21,50 @@ export function wpCollection(path: string): Promise<any[]> {
   return cache.get(path)!;
 }
 
+// Some hosts and firewalls (Hostinger, Wordfence, Cloudflare bot rules) block
+// requests that arrive with a bare "node" user agent, so identify the build.
+const HEADERS = {
+  Accept: 'application/json',
+  'User-Agent': 'Mozilla/5.0 (compatible; TechVibesAstroBuild/1.0; +https://techvibesit.com)',
+};
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** GET a WordPress URL as JSON, retrying brief outages and rate limits. */
+async function getJson(url: string): Promise<{ data: any; res: Response }> {
+  let lastError: Error = new Error('no attempt made');
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      const res = await fetch(url, { headers: HEADERS, signal: AbortSignal.timeout(20000) });
+      const type = res.headers.get('content-type') ?? '';
+      const body = await res.text();
+      // A firewall or challenge page comes back as HTML, not JSON.
+      if (!type.includes('json')) {
+        throw Object.assign(new Error(`HTTP ${res.status}, expected JSON but got "${type || 'no content type'}": ${body.replace(/\s+/g, ' ').slice(0, 160)}`), { retry: res.status >= 429 });
+      }
+      const data = JSON.parse(body);
+      if (!res.ok) {
+        throw Object.assign(new Error(`HTTP ${res.status} ${data?.code ?? ''} ${data?.message ?? ''}`.trim()), {
+          retry: res.status === 429 || res.status >= 500,
+          code: data?.code,
+          status: res.status,
+        });
+      }
+      return { data, res };
+    } catch (err: any) {
+      lastError = err;
+      const retry = err?.retry ?? true; // network errors and timeouts: retry
+      if (!retry || attempt === 4) break;
+      await sleep(1000 * 2 ** (attempt - 1)); // 1s, 2s, 4s
+    }
+  }
+  throw lastError;
+}
+
+// Collections that are allowed not to exist (the job listings route only
+// exists while WP Job Manager is active).
+const OPTIONAL = ['job-listings'];
+
 async function load(path: string): Promise<any[]> {
   const items: any[] = [];
   let page = 1;
@@ -28,19 +72,25 @@ async function load(path: string): Promise<any[]> {
   try {
     do {
       const sep = path.includes('?') ? '&' : '?';
-      const res = await fetch(`${API}/wp/v2/${path}${sep}per_page=100&page=${page}`);
-      if (res.status === 404) return items; // e.g. no job listings route
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const { data, res } = await getJson(`${API}/wp/v2/${path}${sep}per_page=100&page=${page}`);
+      if (!Array.isArray(data)) throw new Error('response was not a list');
       total = Number(res.headers.get('X-WP-TotalPages') ?? 1);
-      items.push(...(await res.json()));
+      items.push(...data);
       page++;
     } while (page <= total);
+    console.log(`[wp] Loaded ${items.length} item(s) from ${path.split('?')[0]}`);
     return items;
-  } catch (err) {
-    const msg = `[wp] Could not load "${path}" from ${API}: ${(err as Error).message}`;
-    // On Cloudflare Pages, fail the build rather than deploy a site with
-    // missing blog posts. Locally, carry on so the design can be worked on.
-    if (process.env.CF_PAGES) throw new Error(msg);
+  } catch (err: any) {
+    if (err?.code === 'rest_no_route' && OPTIONAL.some((p) => path.startsWith(p))) {
+      console.warn(`[wp] ${path.split('?')[0]} is not available (plugin inactive?), skipping.`);
+      return [];
+    }
+    const msg = `[wp] Could not load "${path.split('?')[0]}" from ${API}: ${err?.message ?? err}`;
+    // Never publish a site with missing posts or jobs: stop the build so the
+    // last good deployment stays live. `astro dev` only warns, so the design
+    // can be worked on offline. WP_ALLOW_EMPTY=true overrides this.
+    const allowEmpty = import.meta.env.DEV || (process.env.WP_ALLOW_EMPTY ?? '') === 'true';
+    if (!allowEmpty) throw new Error(msg);
     console.warn(msg);
     return [];
   }
@@ -59,10 +109,22 @@ export async function getContentPages() {
 }
 
 /** Rank Math head (title, meta, schema). Needs "Headless CMS Support" enabled in Rank Math. */
+let seoUnavailable = false;
 export async function getSeoHead(link: string): Promise<string | null> {
+  // If Rank Math's headless endpoint is off, stop asking after the first miss
+  // so the build doesn't hammer WordPress with requests that can't succeed.
+  if (seoUnavailable) return null;
   try {
-    const res = await fetch(`${API}/rankmath/v1/getHead?url=${encodeURIComponent(link)}`);
-    if (!res.ok) return null;
+    const res = await fetch(`${API}/rankmath/v1/getHead?url=${encodeURIComponent(link)}`, {
+      headers: HEADERS,
+      signal: AbortSignal.timeout(15000),
+    });
+    if (res.status === 404) {
+      seoUnavailable = true;
+      console.log('[wp] Rank Math headless endpoint not enabled, using built-in SEO tags.');
+      return null;
+    }
+    if (!res.ok || !(res.headers.get('content-type') ?? '').includes('json')) return null;
     const data = await res.json();
     return data?.success && typeof data.head === 'string' ? data.head : null;
   } catch {
