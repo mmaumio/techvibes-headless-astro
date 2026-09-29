@@ -25,7 +25,7 @@ block-editor pages you publish in WordPress appear at the same URL here.
 - **Service pages**: `src/data/services-content.ts`
 - **Menu, footer, email, address, testimonials**: `src/data/site.ts`
 - **Images**: see Images below
-- **Homepage**: `src/pages/index.astro` (converted from the Claude Design file)
+- **Homepage**: `src/pages/index.astro`
 
 ## Images
 
