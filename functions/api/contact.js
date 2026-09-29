@@ -58,8 +58,9 @@ export async function onRequestPost({ request, env }) {
   }
 
   if (!env.SMTP_USER || !env.SMTP_PASS) {
-    console.error('[contact] SMTP_USER / SMTP_PASS are not set');
-    return reply(request, 503, { error: 'Contact form is not configured yet.' });
+    const missing = ['SMTP_USER', 'SMTP_PASS'].filter((k) => !env[k]).join(', ');
+    console.error(`[contact] Missing variables: ${missing}`);
+    return reply(request, 503, { error: 'Contact form is not configured yet.', reason: 'not-configured', detail: `missing ${missing}` });
   }
 
   const rows = [
@@ -85,6 +86,7 @@ export async function onRequestPost({ request, env }) {
   ].join('\n');
 
   let mailer;
+  let stage = 'login';
   try {
     mailer = await WorkerMailer.connect({
       host: env.SMTP_HOST || 'smtp.hostinger.com',
@@ -96,6 +98,7 @@ export async function onRequestPost({ request, env }) {
       responseTimeoutMs: 15000,
     });
 
+    stage = 'send';
     await mailer.send({
       // Hostinger only accepts mail "from" the mailbox that logged in.
       from: { name: 'TechVibes Website', email: env.SMTP_USER },
@@ -106,11 +109,40 @@ export async function onRequestPost({ request, env }) {
       html,
     });
   } catch (err) {
-    console.error('[contact] SMTP send failed:', err && err.message ? err.message : err);
-    return reply(request, 502, { error: 'Email could not be sent.' });
+    const message = String(err && err.message ? err.message : err);
+    console.error('[contact] SMTP send failed:', message);
+    // Stage "login" covers connecting to the server and signing in. A wrong
+    // password can surface as a timeout because some servers hang up on it.
+    const reason = /535|authentication|credential/i.test(message)
+      ? 'smtp-login-rejected'
+      : stage === 'login'
+        ? 'smtp-connect-or-login-failed'
+        : 'smtp-send-failed';
+    return reply(request, 502, { error: 'Email could not be sent.', reason, detail: message.replace(/\s+/g, ' ').slice(0, 160) });
   } finally {
     try { await mailer?.close(); } catch { /* connection already closed */ }
   }
 
   return reply(request, 200, { ok: true });
+}
+
+// GET /api/contact?check=1 shows whether the form handler is deployed and
+// which settings it can see. It never reveals the password or the mailbox.
+export async function onRequestGet({ request, env }) {
+  if (!new URL(request.url).searchParams.has('check')) {
+    return new Response('Method Not Allowed', { status: 405, headers: { Allow: 'POST' } });
+  }
+  const set = (v) => (v ? 'set' : 'MISSING');
+  const domain = env.SMTP_USER && env.SMTP_USER.includes('@') ? env.SMTP_USER.split('@')[1] : null;
+  const body = {
+    handler: 'deployed',
+    SMTP_USER: env.SMTP_USER ? `set (a mailbox at ${domain ?? 'unknown domain, should be a full email address'})` : 'MISSING',
+    SMTP_PASS: set(env.SMTP_PASS),
+    CONTACT_TO: env.CONTACT_TO ? 'set' : 'not set (defaults to hello@techvibesit.com)',
+    SMTP_HOST: env.SMTP_HOST || 'smtp.hostinger.com (default)',
+    SMTP_PORT: env.SMTP_PORT || '465 (default)',
+  };
+  return new Response(JSON.stringify(body, null, 2), {
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+  });
 }

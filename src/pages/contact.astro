@@ -176,11 +176,15 @@ const faqSchema = {
         headers: { Accept: 'application/json' },
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'failed');
+      if (!res.ok) {
+        throw new Error(data.reason ? `${data.reason}${data.detail ? `: ${data.detail}` : ''}` : `HTTP ${res.status} (no response from the form handler)`);
+      }
       form.reset();
       setStatus("Thank you. Your message has been sent and we'll be in touch shortly.", 'ok');
-    } catch {
-      setStatus('Sorry, your message could not be sent. Please email hello@techvibesit.com instead.', 'error');
+    } catch (err) {
+      // Add ?debug=1 to the page URL to see why a message failed.
+      const why = params.has('debug') ? ` [${(err as Error).message}]` : '';
+      setStatus(`Sorry, your message could not be sent. Please email hello@techvibesit.com instead.${why}`, 'error');
     } finally {
       button.disabled = false;
     }
