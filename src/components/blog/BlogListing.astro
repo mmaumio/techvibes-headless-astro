@@ -1,0 +1,80 @@
+---
+// Shared layout for the blog index and every archive (category, tag, author),
+// including their /page/N/ pages.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../PageHero.astro';
+import CTA from '../CTA.astro';
+import PostCard from './PostCard.astro';
+import Pagination from './Pagination.astro';
+import { getArchives, type Archive } from '../../lib/wp';
+
+interface Props {
+  posts: any[];
+  page: number;
+  totalPages: number;
+  base: string; // /blog/ or /category/wordpress/
+  archive?: Archive;
+  total: number;
+  seoHead?: string | null;
+}
+const { posts, page, totalPages, base, archive, total, seoHead } = Astro.props;
+
+const categories = (await getArchives())
+  .filter((a) => a.kind === 'category')
+  .sort((a, b) => b.posts.length - a.posts.length || a.name.localeCompare(b.name));
+
+const kindLabel = { category: 'Category', tag: 'Tag', author: 'Author' } as const;
+const eyebrow = archive ? kindLabel[archive.kind] : 'Insights';
+const heading = archive ? archive.name : 'Blog';
+const intro = archive
+  ? archive.description || `${total} ${total === 1 ? 'article' : 'articles'}${archive.kind === 'author' ? ` by ${archive.name}` : ` in ${archive.name}`}.`
+  : 'Practical notes on WordPress, Shopify, AI and running a faster, safer website.';
+const title = `${archive ? `${heading} (${eyebrow})` : 'Blog'}${page > 1 ? `, page ${page}` : ''}`;
+const activePath = archive?.kind === 'category' ? archive.path : base === '/blog/' ? '/blog/' : '';
+---
+<BaseLayout title={title} description={intro} seoHead={page === 1 ? seoHead : null}>
+  <PageHero eyebrow={eyebrow} title={heading} intro={intro}>
+    {archive?.kind === 'author' && archive.avatar && (
+      <img src={archive.avatar} alt="" width="72" height="72" class="author-avatar" loading="eager" />
+    )}
+  </PageHero>
+
+  <section>
+    <div class="container section" style="padding-top:clamp(40px,6vw,72px)">
+      {categories.length > 0 && (
+        <nav class="cats" aria-label="Blog categories">
+          <a href="/blog/" aria-current={activePath === '/blog/' ? 'page' : undefined}>All</a>
+          {categories.map((c) => (
+            <a href={c.path} aria-current={activePath === c.path ? 'page' : undefined}>{c.name} <span>{c.posts.length}</span></a>
+          ))}
+        </nav>
+      )}
+
+      {posts.length ? (
+        <div class="posts">
+          {posts.map((post, i) => <PostCard post={post} lead={i === 0 && page === 1 && !archive} eager={i === 0} />)}
+        </div>
+      ) : (
+        <p class="body-lg">New articles are on their way.</p>
+      )}
+
+      <Pagination base={base} page={page} total={totalPages} />
+    </div>
+  </section>
+
+  <CTA />
+</BaseLayout>
+
+<style>
+  .posts { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+  .cats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+  .cats a {
+    display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 999px;
+    border: 1px solid var(--line-2); background: #FFFFFF; color: var(--ink); font-size: 14.5px; font-weight: 500;
+  }
+  .cats a:hover { border-color: var(--teal); color: var(--teal-dark); }
+  .cats a[aria-current] { background: var(--navy); border-color: var(--navy); color: #FFFFFF; }
+  .cats span { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+  .cats a[aria-current] span { color: var(--mint); }
+  .author-avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid #FFFFFF; box-shadow: 0 8px 24px -12px rgba(12,26,36,.35); }
+</style>

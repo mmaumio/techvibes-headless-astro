@@ -4,7 +4,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CTA from '../components/CTA.astro';
 import {
-  getPosts, getContentPages, getSeoHead, decode, featuredImage, authorName, termNames, formatDate, localiseLinks,
+  getPosts, getContentPages, getSeoHead, decode, featuredImage, postTerms, postAuthor, formatDate, localiseLinks,
 } from '../lib/wp';
 
 export async function getStaticPaths() {
@@ -16,8 +16,9 @@ const { entry } = Astro.props;
 const isPost = entry.type === 'post';
 const title = decode(entry.title?.rendered);
 const img = isPost ? featuredImage(entry) : null;
-const cats = isPost ? termNames(entry) : [];
-const author = isPost ? authorName(entry) : '';
+const cats = isPost ? postTerms(entry, 'category') : [];
+const tags = isPost ? postTerms(entry, 'post_tag') : [];
+const author = isPost ? postAuthor(entry) : null;
 const seoHead = await getSeoHead(entry.link);
 const description = decode(entry.excerpt?.rendered ?? '').replace(/\s+/g, ' ').trim().slice(0, 160) || undefined;
 
@@ -34,13 +35,13 @@ const related = isPost ? (await getPosts()).filter((p) => p.id !== entry.id).sli
               <a href="/blog/">Blog</a>
               <span aria-hidden="true">/</span>
               <time datetime={entry.date}>{formatDate(entry.date)}</time>
-              {cats.map((c) => <span class="post-meta__cat">{c}</span>)}
+              {cats.map((c) => <a href={c.path} class="post-meta__cat">{c.name}</a>)}
             </div>
           ) : (
             <span class="eyebrow eyebrow--dot">TechVibes IT</span>
           )}
           <h1 class="h1" style="font-size:clamp(34px,4.6vw,60px)" set:html={entry.title?.rendered} />
-          {author && <span style="font-size:16px;color:var(--muted)">By {author}</span>}
+          {author && <span style="font-size:16px;color:var(--muted)">By <a href={author.path} class="post-author">{author.name}</a></span>}
           {!isPost && entry.modified && <span class="mono" style="font-size:12.5px;color:var(--muted)">Last updated {formatDate(entry.modified)}</span>}
         </div>
       </div>
@@ -53,6 +54,12 @@ const related = isPost ? (await getPosts()).filter((p) => p.id !== entry.id).sli
         </figure>
       )}
       <div class="wp-content" style="max-width:760px" set:html={localiseLinks(entry.content?.rendered)} />
+      {tags.length > 0 && (
+        <div class="post-tags" aria-label="Tags">
+          <span class="mono">Tags</span>
+          {tags.map((t) => <a href={t.path}>#{t.name}</a>)}
+        </div>
+      )}
     </div>
   </article>
 
@@ -80,6 +87,12 @@ const related = isPost ? (await getPosts()).filter((p) => p.id !== entry.id).sli
   .post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
   .post-meta a { color: var(--teal-dark); }
   .post-meta__cat { padding: 4px 9px; border-radius: 6px; background: #F0F7F6; color: var(--teal-dark); }
+  .post-meta__cat:hover { background: #E1F1EE; color: var(--teal-dark); }
+  .post-author { color: var(--ink); font-weight: 500; }
+  .post-author:hover { color: var(--teal-dark); text-decoration: underline; }
+  .post-tags { max-width: 760px; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 14.5px; }
+  .post-tags .mono { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .post-tags a { padding: 4px 10px; border-radius: 6px; background: var(--soft); color: var(--teal-dark); }
   .post-cover { margin: 0 0 clamp(32px, 5vw, 56px); max-width: 960px; }
   .post-cover img { width: 100%; border-radius: 18px; display: block; }
 </style>

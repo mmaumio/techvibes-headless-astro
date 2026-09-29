@@ -162,3 +162,114 @@ export function localiseLinks(html = ''): string {
   const base = WP_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return html.replace(new RegExp(`href="${base}/(?!wp-content/|wp-admin/|wp-json/)`, 'g'), 'href="/');
 }
+
+/* ---------------------------------------------------------------------------
+ * Blog archives (categories, tags, authors) at the same URLs as WordPress
+ * ------------------------------------------------------------------------- */
+
+export const POSTS_PER_PAGE = 9;
+
+export type Term = { id: number; name: string; slug: string; taxonomy: string; path: string };
+export type Author = { id: number; name: string; slug: string; path: string; description: string; avatar: string };
+export type Archive = {
+  path: string; // e.g. /category/wordpress/
+  kind: 'category' | 'tag' | 'author';
+  name: string;
+  description: string;
+  avatar?: string;
+  link: string; // the WordPress URL, for Rank Math SEO data
+  posts: any[];
+};
+
+/** Path part of a WordPress URL: https://techvibesit.com/category/x/ -> /category/x/ */
+const pathOf = (link?: string) => {
+  try { return link ? new URL(link).pathname : ''; } catch { return ''; }
+};
+
+/** Categories and tags of a post (needs _embed=wp:term). */
+export function postTerms(post: any, taxonomy?: 'category' | 'post_tag'): Term[] {
+  return (post?._embedded?.['wp:term'] ?? [])
+    .flat()
+    .filter((t: any) => t && t.slug && (!taxonomy || t.taxonomy === taxonomy))
+    .map((t: any) => ({
+      id: t.id,
+      name: decode(t.name),
+      slug: t.slug,
+      taxonomy: t.taxonomy,
+      path: pathOf(t.link) || `/${t.taxonomy === 'post_tag' ? 'tag' : t.taxonomy}/${t.slug}/`,
+    }));
+}
+
+/** Author of a post (needs _embed=author). */
+export function postAuthor(post: any): Author | null {
+  const a = post?._embedded?.author?.[0];
+  if (!a || !a.slug) return null;
+  return {
+    id: a.id,
+    name: a.name,
+    slug: a.slug,
+    path: pathOf(a.link) || `/author/${a.slug}/`,
+    description: a.description ?? '',
+    avatar: a.avatar_urls?.['96'] ?? '',
+  };
+}
+
+let archivesCache: Promise<Archive[]> | null = null;
+
+/** Every category, tag and author that has published posts. */
+export function getArchives(): Promise<Archive[]> {
+  archivesCache ??= (async () => {
+    const [posts, cats, tags] = await Promise.all([
+      getPosts(),
+      wpCollection('categories?hide_empty=true'),
+      wpCollection('tags?hide_empty=true'),
+    ]);
+    const termInfo = new Map<string, any>([...cats, ...tags].map((t) => [`${t.taxonomy}:${t.id}`, t]));
+    const map = new Map<string, Archive>();
+    const add = (key: string, make: () => Omit<Archive, 'posts'>, post: any) => {
+      if (!map.has(key)) map.set(key, { ...make(), posts: [] });
+      map.get(key)!.posts.push(post);
+    };
+    for (const post of posts) {
+      for (const t of postTerms(post)) {
+        if (t.taxonomy !== 'category' && t.taxonomy !== 'post_tag') continue;
+        const info = termInfo.get(`${t.taxonomy}:${t.id}`);
+        add(t.path, () => ({
+          path: t.path,
+          kind: t.taxonomy === 'category' ? 'category' : 'tag',
+          name: t.name,
+          description: decode(info?.description ?? ''),
+          link: info?.link ?? '',
+        }), post);
+      }
+      const author = postAuthor(post);
+      if (author) {
+        add(author.path, () => ({
+          path: author.path,
+          kind: 'author',
+          name: author.name,
+          description: author.description,
+          avatar: author.avatar,
+          link: post._embedded.author[0].link ?? '',
+        }), post);
+      }
+    }
+    return [...map.values()];
+  })();
+  return archivesCache;
+}
+
+/** Split a list into pages of POSTS_PER_PAGE. */
+export function paginate<T>(items: T[], perPage = POSTS_PER_PAGE): T[][] {
+  const pages: T[][] = [];
+  for (let i = 0; i < items.length; i += perPage) pages.push(items.slice(i, i + perPage));
+  return pages.length ? pages : [[]];
+}
+
+/** URL of page n of a listing: /blog/ -> /blog/page/2/ (like WordPress). */
+export const pageUrl = (base: string, n: number) => (n <= 1 ? base : `${base}page/${n}/`);
+
+export function excerptOf(post: any, max = 190): string {
+  const text = decode(post?.excerpt?.rendered ?? '').replace(/\s+/g, ' ').replace(/\[…\]|\[&hellip;\]/g, '').trim();
+  return text.length > max ? text.slice(0, max - 3).replace(/\s+\S*$/, '') + '…' : text;
+}

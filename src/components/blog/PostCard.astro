@@ -1,0 +1,63 @@
+---
+import { featuredImage, postTerms, postAuthor, formatDate, excerptOf } from '../../lib/wp';
+
+interface Props { post: any; lead?: boolean; eager?: boolean }
+const { post, lead = false, eager = false } = Astro.props;
+
+const img = featuredImage(post);
+const cats = postTerms(post, 'category').slice(0, 2);
+const author = postAuthor(post);
+const excerpt = excerptOf(post);
+---
+<article data-reveal class:list={['card', 'post-card', { 'post-card--lead': lead }]}>
+  <div class="post-card__media">
+    {img?.source_url ? (
+      <img src={img.source_url} alt={img.alt_text || ''} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+    ) : (
+      <div class="placeholder" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#mk-d" fill="url(#tvg)"></use></svg></div>
+    )}
+  </div>
+  <div class="post-card__body">
+    <div class="post-card__meta">
+      <time datetime={post.date}>{formatDate(post.date)}</time>
+      {cats.map((c) => <a href={c.path} class="post-card__cat">{c.name}</a>)}
+    </div>
+    <h2 class="h3 post-card__title"><a href={`/${post.slug}/`} class="post-card__link" set:html={post.title?.rendered} /></h2>
+    {excerpt && <p class="post-card__excerpt">{excerpt}</p>}
+    <div class="post-card__foot">
+      {author ? <span>By <a href={author.path} class="post-card__author">{author.name}</a></span> : <span />}
+      <span class="link-arrow" aria-hidden="true">Read More →</span>
+    </div>
+  </div>
+</article>
+
+<style>
+  /* Whole card is clickable (via the title link) while category and author links stay separate */
+  .post-card { position: relative; overflow: hidden; display: flex; flex-direction: column; }
+  .post-card:hover { transform: translateY(-3px); box-shadow: 0 24px 48px -28px rgba(12,26,36,.3); }
+  .post-card__link { color: var(--ink); }
+  .post-card__link::after { content: ''; position: absolute; inset: 0; z-index: 1; }
+  .post-card__link:hover { color: var(--ink); }
+  .post-card__cat, .post-card__author { position: relative; z-index: 2; }
+
+  .post-card__media { position: relative; aspect-ratio: 16 / 9; background: #EAF0F0; overflow: hidden; }
+  .post-card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .post-card__body { padding: 24px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .post-card__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; color: var(--muted); }
+  .post-card__cat { color: var(--teal-dark); text-transform: uppercase; }
+  .post-card__cat:hover { color: var(--blue); text-decoration: underline; }
+  .post-card__title { font-size: 22px; letter-spacing: -0.025em; line-height: 1.25; }
+  .post-card__excerpt { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--text); }
+  .post-card__foot { margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; gap: 12px; font-size: 14.5px; color: var(--muted); }
+  .post-card__author { color: var(--ink); font-weight: 500; }
+  .post-card__author:hover { color: var(--teal-dark); text-decoration: underline; }
+
+  @media (min-width: 900px) {
+    .post-card--lead { grid-column: 1 / -1; display: grid; grid-template-columns: 1.15fr 1fr; }
+    .post-card--lead .post-card__media { aspect-ratio: auto; min-height: 340px; }
+    .post-card--lead .post-card__body { padding: clamp(28px, 4vw, 48px); justify-content: center; }
+    .post-card--lead .post-card__title { font-size: clamp(28px, 3vw, 38px); letter-spacing: -0.035em; }
+    .post-card--lead .post-card__excerpt { font-size: 17px; }
+    .post-card--lead .post-card__foot { margin-top: 8px; }
+  }
+</style>

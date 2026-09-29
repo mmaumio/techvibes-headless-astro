@@ -1,0 +1,36 @@
+---
+// WordPress-style archives at the same URLs as the live site:
+//   /category/<slug>/   /tag/<slug>/   /author/<slug>/   (plus /page/N/)
+//   /blog/page/N/       older posts on the main blog listing
+import BlogListing from '../components/blog/BlogListing.astro';
+import { getPosts, getArchives, getSeoHead, paginate, pageUrl } from '../lib/wp';
+
+export async function getStaticPaths() {
+  const [posts, archives] = await Promise.all([getPosts(), getArchives()]);
+  const routes: any[] = [];
+  const trim = (p: string) => p.replace(/^\/|\/$/g, '');
+
+  const blogPages = paginate(posts);
+  blogPages.slice(1).forEach((chunk, i) => {
+    routes.push({
+      params: { archive: trim(pageUrl('/blog/', i + 2)) },
+      props: { posts: chunk, page: i + 2, totalPages: blogPages.length, base: '/blog/', total: posts.length },
+    });
+  });
+
+  for (const archive of archives) {
+    const pages = paginate(archive.posts);
+    pages.forEach((chunk, i) => {
+      routes.push({
+        params: { archive: trim(pageUrl(archive.path, i + 1)) },
+        props: { posts: chunk, page: i + 1, totalPages: pages.length, base: archive.path, total: archive.posts.length, archive },
+      });
+    });
+  }
+  return routes;
+}
+
+const props = Astro.props;
+const seoHead = props.archive && props.page === 1 && props.archive.link ? await getSeoHead(props.archive.link) : null;
+---
+<BlogListing {...props} seoHead={seoHead} />

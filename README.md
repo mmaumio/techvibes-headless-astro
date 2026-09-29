@@ -10,7 +10,7 @@ listings are pulled from its REST API at build time.
 | Page | Source |
 |---|---|
 | Home, About, Contact, Work, Career, 6 service pages | Astro files in `src/pages/`, content in `src/data/` |
-| Blog posts (`/post-slug/`) and `/blog/` | WordPress posts |
+| Blog posts (`/post-slug/`), `/blog/`, category, tag and author archives (`/category/x/`, `/tag/x/`, `/author/x/`, with `/page/N/`) | WordPress posts, categories, tags and authors, at the same URLs as WordPress |
 | Privacy, Terms, Cookie, Accessibility | WordPress pages (block editor) |
 | Job listings (`/job/slug/`) | WP Job Manager (`/wp-json/wp/v2/job-listings`) |
 | Schedule a meeting (`/schedule-a-meeting/`) | Calendly inline embed, link set in `src/data/site.ts` (`calendlyUrl`) |

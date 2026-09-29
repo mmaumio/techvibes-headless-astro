@@ -1,0 +1,29 @@
+---
+import { pageUrl } from '../../lib/wp';
+interface Props { base: string; page: number; total: number }
+const { base, page, total } = Astro.props;
+const pages = Array.from({ length: total }, (_, i) => i + 1);
+---
+{total > 1 && (
+  <nav class="pager" aria-label="Pagination">
+    {page > 1 ? <a href={pageUrl(base, page - 1)} rel="prev">← Newer</a> : <span class="pager__off">← Newer</span>}
+    <ol>
+      {pages.map((n) => (
+        <li>
+          {n === page ? <span aria-current="page">{n}</span> : <a href={pageUrl(base, n)}>{n}</a>}
+        </li>
+      ))}
+    </ol>
+    {page < total ? <a href={pageUrl(base, page + 1)} rel="next">Older →</a> : <span class="pager__off">Older →</span>}
+  </nav>
+)}
+
+<style>
+  .pager { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 15px; font-weight: 500; }
+  .pager ol { display: flex; gap: 6px; list-style: none; margin: 0; padding: 0; }
+  .pager ol a, .pager ol span { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 40px; border-radius: 10px; font-family: var(--font-mono); font-size: 14px; }
+  .pager ol a { color: var(--ink); border: 1px solid var(--line-2); }
+  .pager ol a:hover { border-color: var(--teal); color: var(--teal-dark); }
+  .pager ol [aria-current] { background: var(--navy); color: #FFFFFF; }
+  .pager__off { color: #A9B6BD; }
+</style>
