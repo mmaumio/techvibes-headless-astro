@@ -92,7 +92,7 @@ Cache > REST API) so rebuilds get fresh content.
   Blog posts, legal pages and jobs then use Rank Math's title, meta and schema.
 - Canonical URLs always point at `https://techvibesit.com`, so the test
   subdomain never competes with the live site.
-- While `SITE_NOINDEX=true`, every page has `noindex` and `robots.txt` blocks crawlers.
+- While `SITE_NOINDEX=true`, every page has a `noindex` tag. `robots.txt` still allows crawling so search engines can see that tag.
 
 ## Cutover checklist (when this replaces WordPress on techvibesit.com)
 
