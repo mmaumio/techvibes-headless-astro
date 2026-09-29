@@ -1,0 +1,5 @@
+---
+interface Props { size?: number; class?: string; style?: string }
+const { size = 30, class: className, style } = Astro.props;
+---
+<svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true" class={className} style={style}><use href="#mk-d" fill="url(#tvg)"></use></svg>

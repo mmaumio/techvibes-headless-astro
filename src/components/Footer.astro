@@ -1,0 +1,72 @@
+---
+import Logo from './Logo.astro';
+import { company, services, legal } from '../data/site';
+const year = new Date().getFullYear();
+const companyLinks = [
+  { label: 'About', href: '/about/' },
+  { label: 'Work', href: '/work/' },
+  { label: 'Career', href: '/career/' },
+  { label: 'Blog', href: '/blog/' },
+  { label: 'Contact', href: '/contact/' },
+];
+---
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <Logo />
+        <p><strong>{company.legalName}</strong><br />{company.tagline}</p>
+        <address>{company.address}</address>
+        <a href={`mailto:${company.email}`} class="site-footer__email">{company.email}</a>
+      </div>
+      <nav aria-label="Company" class="site-footer__col">
+        <span class="site-footer__label">Company</span>
+        {companyLinks.map((l) => <a href={l.href}>{l.label}</a>)}
+      </nav>
+      <nav aria-label="Services" class="site-footer__col">
+        <span class="site-footer__label">Services</span>
+        {services.map((s) => <a href={`/${s.slug}/`}>{s.short}</a>)}
+      </nav>
+      <nav aria-label="Social" class="site-footer__col">
+        <span class="site-footer__label">Connect</span>
+        <a href={company.linkedin} rel="noopener">LinkedIn</a>
+        <a href={company.facebook} rel="noopener">Facebook</a>
+      </nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© {year} {company.legalName}. Registered in England &amp; Wales, company no. {company.companyNo}.</span>
+      <div class="site-footer__legal">
+        {legal.map((l) => <a href={l.href}>{l.label}</a>)}
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: #FFFFFF; }
+  .site-footer__inner {
+    padding-top: clamp(56px, 7vw, 88px); padding-bottom: 32px;
+    display: flex; flex-direction: column; gap: 56px;
+  }
+  .site-footer__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 40px; }
+  .site-footer__brand { display: flex; flex-direction: column; gap: 18px; grid-column: span 2; min-width: 0; }
+  @media (max-width: 480px) { .site-footer__brand { grid-column: auto; } }
+  .site-footer__brand p { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--text); max-width: 380px; }
+  .site-footer__brand strong { font-weight: 600; color: var(--ink); }
+  .site-footer__brand address { font-style: normal; font-size: 14.5px; line-height: 1.6; color: var(--muted); max-width: 420px; }
+  .site-footer__email { font-size: 15px; font-weight: 500; }
+  .site-footer__col { display: flex; flex-direction: column; gap: 12px; font-size: 15px; }
+  .site-footer__col a { color: var(--ink); }
+  .site-footer__col a:hover { color: var(--teal-dark); }
+  .site-footer__label {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); padding-bottom: 4px;
+  }
+  .site-footer__bottom {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px 32px;
+    padding-top: 24px; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--muted);
+  }
+  .site-footer__legal { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+  .site-footer__legal a { color: var(--muted); }
+  .site-footer__legal a:hover { color: var(--teal-dark); }
+</style>

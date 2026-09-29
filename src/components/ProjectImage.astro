@@ -1,0 +1,10 @@
+---
+import type { Project } from '../data/work';
+interface Props { project: Project }
+const { project } = Astro.props;
+---
+<div class="placeholder" role={project.image ? undefined : 'img'} aria-label={project.image ? undefined : `${project.name} project image`}>
+  {project.image
+    ? <img src={project.image} alt={`${project.name} project`} loading="lazy" decoding="async" />
+    : <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#mk-d" fill="url(#tvg)"></use></svg>}
+</div>

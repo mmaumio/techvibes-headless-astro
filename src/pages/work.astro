@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import FeaturedProject from '../components/FeaturedProject.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import CTA from '../components/CTA.astro';
+import { projects } from '../data/work';
+
+const featured = projects.find((p) => p.featured) ?? projects[0];
+const rest = projects.filter((p) => p !== featured);
+---
+<BaseLayout title="Work" description="The work we've done and the impact it delivered: websites, stores, apps and platforms built by TechVibes IT.">
+  <PageHero eyebrow="Work" title="The Work We've Done. <span class='gradient-text'>The Impact It Delivered.</span>" wide />
+
+  <section>
+    <div class="container section stack" style="gap:clamp(24px,3vw,32px)">
+      <FeaturedProject project={featured} />
+      <div class="grid-auto" style="--min:300px">
+        {rest.map((p) => <ProjectCard project={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <CTA />
+</BaseLayout>

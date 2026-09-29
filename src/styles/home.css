@@ -1,0 +1,12 @@
+/* Hover states from the design file (generated) */
+.hv-1:hover{background:#16303F !important;color:#FFFFFF !important;transform:translateY(-2px) !important}
+.hv-2:hover{border-color:#1B9C85 !important;color:#0F1E2A !important;transform:translateY(-2px) !important}
+.hv-3:hover{background:#10263A !important;color:#FFFFFF !important}
+.hv-4:hover{background:#F5F8F8 !important;color:#0F1E2A !important}
+.hv-5:hover{background:#E9F2F0 !important;color:#0F1E2A !important}
+.hv-6:hover{transform:translateY(-3px) !important;box-shadow:0 24px 48px -28px rgba(12,26,36,.3) !important}
+.hv-7:hover{transform:translateY(-3px) !important;box-shadow:0 24px 48px -28px rgba(12,26,36,.3) !important;color:#0F1E2A !important}
+
+/* Hero responsive rules (the design switched these in JS) */
+.hero-float{display:none !important}
+@media (min-width:1040px){.hero-visual{padding-bottom:112px}.hero-float{display:flex !important}}

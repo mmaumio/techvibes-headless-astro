@@ -1,0 +1,143 @@
+---
+import Logo from './Logo.astro';
+import { nav } from '../data/site';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => href !== '/' && !href.includes('#') && path.startsWith(href);
+const mainNav = nav;
+---
+<header class="site-header" data-header>
+  <div class="container site-header__bar">
+    <Logo />
+
+    <nav aria-label="Primary" class="nav-desktop">
+      {mainNav.map((item) =>
+        item.children ? (
+          <div class="nav-drop">
+            <a href={item.href} class:list={['nav-link', { 'is-active': item.children.some((c) => isActive(c.href)) }]} aria-haspopup="true">
+              {item.label}
+              <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </a>
+            <div class="nav-drop__panel">
+              {item.children.map((c) => (
+                <a href={c.href} class:list={['nav-drop__item', { 'is-active': isActive(c.href) }]}>{c.label}</a>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <a href={item.href} class:list={['nav-link', { 'is-active': isActive(item.href) }]}>{item.label}</a>
+        ),
+      )}
+    </nav>
+
+    <div class="site-header__actions">
+      <a href="/contact/" class="btn btn--dark btn--sm">Let's Talk <span class="arrow" aria-hidden="true">→</span></a>
+      <button type="button" class="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav" data-menu-btn>
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-nav" aria-label="Mobile" class="nav-mobile" hidden data-menu>
+    {nav.map((item) => (
+      <>
+        <a href={item.children ? '/#services' : item.href} class="nav-mobile__link">{item.label}</a>
+        {item.children && (
+          <div class="nav-mobile__sub">
+            {item.children.map((c) => <a href={c.href}>{c.label}</a>)}
+          </div>
+        )}
+      </>
+    ))}
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255,255,255,0); border-bottom: 1px solid transparent;
+    backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    transition: background .3s ease, border-color .3s ease;
+  }
+  .site-header.is-scrolled, .site-header.is-open { background: rgba(255,255,255,.86); }
+  .site-header.is-scrolled { border-bottom-color: #E3E9EA; }
+  .site-header__bar {
+    height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    transition: height .3s ease;
+  }
+  .site-header.is-scrolled .site-header__bar { height: 64px; }
+  .site-header__actions { display: flex; align-items: center; gap: 10px; }
+
+  .nav-desktop { display: flex; align-items: center; gap: 4px; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 13px; border-radius: 8px; font-size: 15px; font-weight: 500; color: #2B3A45;
+  }
+  .nav-link:hover, .nav-drop:focus-within > .nav-link, .nav-drop:hover > .nav-link { background: #F1F4F4; color: var(--ink); }
+  .nav-link.is-active { color: var(--teal-dark); }
+
+  .nav-drop { position: relative; }
+  .nav-drop__panel {
+    position: absolute; top: calc(100% + 6px); left: -8px; min-width: 250px;
+    display: flex; flex-direction: column; padding: 8px;
+    background: #FFFFFF; border: 1px solid var(--line-2); border-radius: 14px;
+    box-shadow: 0 24px 48px -24px rgba(12,26,36,.28);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .2s ease, transform .2s ease, visibility .2s;
+  }
+  .nav-drop__panel::before { content: ''; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
+  .nav-drop:hover .nav-drop__panel, .nav-drop:focus-within .nav-drop__panel { opacity: 1; visibility: visible; transform: none; }
+  .nav-drop__item { padding: 10px 12px; border-radius: 8px; font-size: 15px; font-weight: 500; color: #2B3A45; }
+  .nav-drop__item:hover { background: #F1F4F4; color: var(--ink); }
+  .nav-drop__item.is-active { color: var(--teal-dark); }
+
+  .menu-btn {
+    width: 42px; height: 42px; border-radius: 10px; border: 1px solid #D5DDDF; background: #FFFFFF;
+    display: none; flex-direction: column; align-items: center; justify-content: center; gap: 5px; cursor: pointer;
+  }
+  .menu-btn span { width: 16px; height: 2px; background: var(--ink); border-radius: 1px; transition: transform .25s ease; }
+  .site-header.is-open .menu-btn span:first-child { transform: translateY(3.5px) rotate(45deg); }
+  .site-header.is-open .menu-btn span:last-child { transform: translateY(-3.5px) rotate(-45deg); }
+
+  .nav-mobile {
+    border-top: 1px solid #E3E8EA; background: #FFFFFF;
+    padding: 12px var(--gutter) 24px; display: flex; flex-direction: column;
+    max-height: calc(100vh - 64px); overflow-y: auto;
+  }
+  .nav-mobile[hidden] { display: none; }
+  .nav-mobile__link {
+    padding: 16px 0; border-bottom: 1px solid #EEF1F2; font-size: 22px; font-weight: 500;
+    letter-spacing: -0.02em; color: var(--ink);
+  }
+  .nav-mobile__sub { display: flex; flex-direction: column; padding: 6px 0 12px 14px; border-bottom: 1px solid #EEF1F2; }
+  .nav-mobile__sub a { padding: 8px 0; font-size: 16.5px; color: var(--text); }
+
+  @media (max-width: 1023px) {
+    .nav-desktop { display: none; }
+    .menu-btn { display: flex; }
+  }
+  @media (max-width: 400px) {
+    .site-header__actions .btn { display: none; }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  if (header) {
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+  const setOpen = (open: boolean) => {
+    if (!header || !btn || !menu) return;
+    header.classList.toggle('is-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    menu.hidden = !open;
+  };
+  btn?.addEventListener('click', () => setOpen(menu?.hidden ?? false));
+  menu?.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) setOpen(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
+</script>

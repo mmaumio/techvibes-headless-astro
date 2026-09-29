@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Page not found">
+  <section class="page-hero">
+    <div class="page-hero__grid" aria-hidden="true"></div>
+    <div class="container">
+      <div class="page-hero__inner" style="min-height:52vh;justify-content:center">
+        <span class="eyebrow eyebrow--dot">Error 404</span>
+        <h1 class="h1">This page <span class="gradient-text">doesn't exist.</span></h1>
+        <p class="lead" style="max-width:560px">It may have moved when we rebuilt the site. Try the homepage, or tell us what you were looking for.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;padding-top:4px">
+          <a href="/" class="btn btn--dark">Back to homepage <span class="arrow" aria-hidden="true">→</span></a>
+          <a href="/contact/" class="btn btn--outline">Contact us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

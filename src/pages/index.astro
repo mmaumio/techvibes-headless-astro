@@ -1,0 +1,446 @@
+---
+// Homepage, converted from the Claude Design file.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SelectedWork from '../components/SelectedWork.astro';
+import CTA from '../components/CTA.astro';
+import '../styles/home.css';
+---
+<BaseLayout
+  title="TechVibes IT - AI-Powered Technology for Businesses Ready to Grow"
+  description="We design, build, and scale digital products, eCommerce experiences, and AI-powered solutions that help ambitious businesses work smarter and grow faster."
+>
+<section data-screen-label="Hero" style="position:relative;overflow:hidden;background:#FFFFFF">
+  <div aria-hidden="true" style="position:absolute;inset:0;background-image:linear-gradient(#EEF2F2 1px,transparent 1px),linear-gradient(90deg,#EEF2F2 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse 80% 70% at 70% 30%,#000 30%,transparent 80%);mask-image:radial-gradient(ellipse 80% 70% at 70% 30%,#000 30%,transparent 80%)"></div>
+  <div aria-hidden="true" style="position:absolute;right:-12%;top:-30%;width:760px;height:760px;border-radius:50%;background:radial-gradient(circle,rgba(21,159,168,.16) 0%,rgba(42,116,206,.07) 45%,transparent 70%);transform:translateY(0px)" data-parallax></div>
+  <div style="position:relative;max-width:1240px;margin:0 auto;padding:clamp(56px,9vw,112px) clamp(20px,4vw,40px) clamp(72px,10vw,128px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:clamp(48px,6vw,80px);align-items:center">
+    <div style="display:flex;flex-direction:column;gap:28px">
+      <div style="display:flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:0.12em;text-transform:uppercase;color:#137565">
+        <span style="width:8px;height:8px;border-radius:2px;background:#1B9C85"></span>UK technology company
+      </div>
+      <h1 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(42px,6.2vw,80px);font-weight:600;letter-spacing:-0.045em;line-height:1.0;text-wrap:balance">AI-Powered Technology for Businesses <span style="background:linear-gradient(100deg,#1B9C85 0%,#159FA8 45%,#2A74CE 100%);-webkit-background-clip:text;background-clip:text;color:transparent">Ready to Grow</span></h1>
+      <p style="margin:0;font-size:clamp(17px,1.5vw,20px);line-height:1.55;color:#3C4B55;max-width:560px;text-wrap:pretty">We design, build, and scale digital products, eCommerce experiences, and AI-powered solutions that help ambitious businesses work smarter and grow faster.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;padding-top:4px">
+        <a class="hv-1" href="/contact/" style="display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 26px;border-radius:12px;background:#0C1A24;color:#FFFFFF;font-size:16.5px;font-weight:500;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 8px 24px -8px rgba(12,26,36,.45);transition:transform .2s ease,background .2s ease">Start Your Project <span aria-hidden="true" style="color:#6FD3C0">→</span></a>
+        <a class="hv-2" href="#services" style="display:inline-flex;align-items:center;height:54px;padding:0 24px;border-radius:12px;background:#FFFFFF;color:#0F1E2A;font-size:16.5px;font-weight:500;border:1px solid #D2DADD;transition:border-color .2s ease,transform .2s ease">Explore Our Services</a>
+      </div>
+    </div>
+
+    <div class="hero-visual" style="position:relative">
+      <div style="background:rgba(255,255,255,.82);backdrop-filter:blur(10px);border:1px solid #DCE3E5;border-radius:18px;box-shadow:0 30px 60px -30px rgba(12,26,36,.28),0 1px 2px rgba(12,26,36,.05);padding:22px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:2px 4px 14px;border-bottom:1px solid #EDF1F2;margin-bottom:8px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#4A5B66;letter-spacing:0.04em">techvibes / delivery</span>
+          <span style="display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#137565"><span style="width:7px;height:7px;border-radius:50%;background:#1B9C85;animation:tvPulse 2s infinite"></span>running</span>
+        </div>
+        <div style="position:relative;display:flex;flex-direction:column;gap:4px">
+          <div aria-hidden="true" style="position:absolute;left:23px;top:22px;bottom:22px;width:2px;background:#E6ECED"></div>
+          <div aria-hidden="true" data-rail style="position:absolute;left:23px;top:22px;width:2px;height:0px;background:linear-gradient(#1B9C85,#2A74CE);transition:height .6s ease"></div>
+          
+            <div data-stage="0" style="position:relative;display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:8px;padding:12px 12px 12px 0;border-radius:12px;background:#F0F7F6;transition:background .4s ease">
+              <div style="display:flex;justify-content:center"><span data-stage-dot style="width:14px;height:14px;border-radius:4px;background:#1B9C85;border:2px solid transparent;transition:all .4s ease"></span></div>
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:17px;font-weight:600;letter-spacing:-0.02em;color:#0F1E2A">Business</span>
+                <span style="font-size:14px;color:#4A5B66">Your goals, customers and operations</span>
+              </div>
+              <span data-stage-num style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#137565">01</span>
+            </div>
+          
+            <div data-stage="1" style="position:relative;display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:8px;padding:12px 12px 12px 0;border-radius:12px;background:transparent;transition:background .4s ease">
+              <div style="display:flex;justify-content:center"><span data-stage-dot style="width:14px;height:14px;border-radius:4px;background:#FFFFFF;border:2px solid #C9D4D7;transition:all .4s ease"></span></div>
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:17px;font-weight:600;letter-spacing:-0.02em;color:#0F1E2A">Technology</span>
+                <span style="font-size:14px;color:#4A5B66">Websites, stores, apps and platforms</span>
+              </div>
+              <span data-stage-num style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8A99A2">02</span>
+            </div>
+          
+            <div data-stage="2" style="position:relative;display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:8px;padding:12px 12px 12px 0;border-radius:12px;background:transparent;transition:background .4s ease">
+              <div style="display:flex;justify-content:center"><span data-stage-dot style="width:14px;height:14px;border-radius:4px;background:#FFFFFF;border:2px solid #C9D4D7;transition:all .4s ease"></span></div>
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:17px;font-weight:600;letter-spacing:-0.02em;color:#0F1E2A">AI</span>
+                <span style="font-size:14px;color:#4A5B66">Models connected to your own data</span>
+              </div>
+              <span data-stage-num style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8A99A2">03</span>
+            </div>
+          
+            <div data-stage="3" style="position:relative;display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:8px;padding:12px 12px 12px 0;border-radius:12px;background:transparent;transition:background .4s ease">
+              <div style="display:flex;justify-content:center"><span data-stage-dot style="width:14px;height:14px;border-radius:4px;background:#FFFFFF;border:2px solid #C9D4D7;transition:all .4s ease"></span></div>
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:17px;font-weight:600;letter-spacing:-0.02em;color:#0F1E2A">Automation</span>
+                <span style="font-size:14px;color:#4A5B66">Repetitive work handled by systems</span>
+              </div>
+              <span data-stage-num style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8A99A2">04</span>
+            </div>
+          
+            <div data-stage="4" style="position:relative;display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:8px;padding:12px 12px 12px 0;border-radius:12px;background:transparent;transition:background .4s ease">
+              <div style="display:flex;justify-content:center"><span data-stage-dot style="width:14px;height:14px;border-radius:4px;background:#FFFFFF;border:2px solid #C9D4D7;transition:all .4s ease"></span></div>
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:17px;font-weight:600;letter-spacing:-0.02em;color:#0F1E2A">Growth</span>
+                <span style="font-size:14px;color:#4A5B66">More capacity, better decisions</span>
+              </div>
+              <span data-stage-num style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8A99A2">05</span>
+            </div>
+          
+        </div>
+      </div>
+      <div class="hero-float" style="position:absolute;right:28px;bottom:0;width:260px;background:#0C1A24;color:#FFFFFF;border-radius:14px;padding:16px 18px;box-shadow:0 24px 48px -20px rgba(12,26,36,.55);display:flex;flex-direction:column;gap:10px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#8FE0D0">Automation · new order</span>
+          <div style="display:flex;flex-direction:column;gap:7px;font-size:13.5px;color:#D9E4EA">
+            <span style="display:flex;gap:9px;align-items:center"><span style="color:#6FD3C0">✓</span>Stock synced</span>
+            <span style="display:flex;gap:9px;align-items:center"><span style="color:#6FD3C0">✓</span>Invoice issued</span>
+            <span style="display:flex;gap:9px;align-items:center"><span style="color:#7FB0EC">●</span>Customer updated</span>
+          </div>
+        </div>
+      
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Trust strip" aria-label="Clients" style="border-top:1px solid #EAEFF0;border-bottom:1px solid #EAEFF0;background:#FAFBFB">
+  <div style="max-width:1240px;margin:0 auto;padding:32px clamp(20px,4vw,40px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px 48px">
+    <span style="font-size:14.5px;color:#4A5B66;max-width:220px;line-height:1.4">Trusted by entrepreneurs, startups, and SMEs</span>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px clamp(28px,4vw,56px);flex:1;justify-content:flex-end">
+      <span style="font-family:Manrope,sans-serif;font-size:20px;font-weight:600;letter-spacing:-0.03em;color:#51616B">Swiglife</span>
+      <span style="font-family:Manrope,sans-serif;font-size:20px;font-weight:600;letter-spacing:-0.03em;color:#51616B">Texas School Alliance</span>
+      <span style="font-family:Manrope,sans-serif;font-size:20px;font-weight:600;letter-spacing:-0.03em;color:#51616B">Poem Analysis</span>
+      <span style="font-family:Manrope,sans-serif;font-size:20px;font-weight:600;letter-spacing:-0.03em;color:#51616B">Groove Grub</span>
+      <span style="font-family:Manrope,sans-serif;font-size:20px;font-weight:600;letter-spacing:-0.03em;color:#51616B">Play Wisconsin</span>
+    </div>
+  </div>
+</section>
+
+<section id="services" data-screen-label="Services" style="background:#FFFFFF">
+  <div style="max-width:1240px;margin:0 auto;padding:clamp(80px,10vw,136px) clamp(20px,4vw,40px);display:flex;flex-direction:column;gap:clamp(40px,5vw,64px)">
+    <div data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px 64px;align-items:end">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:0.12em;text-transform:uppercase;color:#137565">01 · Capabilities</span>
+        <h2 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(34px,4.6vw,56px);font-weight:600;letter-spacing:-0.04em;line-height:1.04;text-wrap:balance">Technology that solves real business problems</h2>
+      </div>
+      <p style="margin:0;font-size:18px;line-height:1.6;color:#3C4B55;text-wrap:pretty">From high-performing websites and eCommerce platforms to AI agents and custom SaaS applications, we build technology around the way your business actually works.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:1px;background:#E3E9EA;border:1px solid #E3E9EA;border-radius:16px;overflow:hidden">
+      <a class="hv-3" data-reveal="1" href="/ai-automation/" style="background:#0C1A24;color:#FFFFFF;padding:32px;display:flex;flex-direction:column;gap:28px;min-height:340px;transition:background .3s ease">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div style="display:grid;grid-template-columns:repeat(2,12px);gap:4px"><span style="height:12px;border-radius:3px;background:#2A3C49"></span><span style="height:12px;border-radius:3px;background:#2A3C49"></span><span style="height:12px;border-radius:3px;background:#2A3C49"></span><span style="height:12px;border-radius:0 0 12px 0;background:linear-gradient(135deg,#1B9C85,#2A74CE)"></span></div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8FA3AF">01</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;margin-top:auto">
+          <h3 style="font-family:Manrope,sans-serif;margin:0;font-size:26px;font-weight:600;letter-spacing:-0.03em">AI &amp; Automation</h3>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:15.5px;color:#C3D1D8">
+            <li>AI agents</li><li>Workflow automation</li><li>Business process optimisation</li><li>AI-powered insights</li>
+          </ul>
+          <span style="font-size:15px;font-weight:500;color:#8FE0D0">Learn more →</span>
+        </div>
+      </a>
+      <a class="hv-4" data-reveal="1" href="/shopify-development/" style="background:#FFFFFF;color:#0F1E2A;padding:32px;display:flex;flex-direction:column;gap:28px;min-height:340px;transition:background .3s ease">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div style="display:grid;grid-template-columns:repeat(2,12px);gap:4px"><span style="height:12px;border-radius:3px;background:#1B9C85"></span><span style="height:12px;border-radius:3px;background:#DDE5E7"></span><span style="height:12px;border-radius:3px;background:#DDE5E7"></span><span style="height:12px;border-radius:0 0 12px 0;background:#DDE5E7"></span></div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5E6E78">02</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;margin-top:auto">
+          <h3 style="font-family:Manrope,sans-serif;margin:0;font-size:26px;font-weight:600;letter-spacing:-0.03em">Shopify Development</h3>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:15.5px;color:#3C4B55">
+            <li>Store development</li><li>Custom Shopify apps</li><li>Theme customisation</li><li>Integrations</li><li>Maintenance</li>
+          </ul>
+          <span style="font-size:15px;font-weight:500;color:#137565">Learn more →</span>
+        </div>
+      </a>
+      <a class="hv-4" data-reveal="1" href="/wordpress-development/" style="background:#FFFFFF;color:#0F1E2A;padding:32px;display:flex;flex-direction:column;gap:28px;min-height:340px;transition:background .3s ease">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div style="display:grid;grid-template-columns:repeat(2,12px);gap:4px"><span style="height:12px;border-radius:3px;background:#DDE5E7"></span><span style="height:12px;border-radius:3px;background:#159FA8"></span><span style="height:12px;border-radius:3px;background:#DDE5E7"></span><span style="height:12px;border-radius:0 0 12px 0;background:#DDE5E7"></span></div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5E6E78">03</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;margin-top:auto">
+          <h3 style="font-family:Manrope,sans-serif;margin:0;font-size:26px;font-weight:600;letter-spacing:-0.03em">WordPress &amp; WooCommerce</h3>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:15.5px;color:#3C4B55">
+            <li>Custom websites</li><li>WooCommerce</li><li>Custom plugins</li><li>Custom themes</li><li>Performance and security</li>
+          </ul>
+          <span style="font-size:15px;font-weight:500;color:#137565">Learn more →</span>
+        </div>
+      </a>
+      <a class="hv-4" data-reveal="1" href="/saas-app-development/" style="background:#FFFFFF;color:#0F1E2A;padding:32px;display:flex;flex-direction:column;gap:28px;min-height:340px;transition:background .3s ease">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div style="display:grid;grid-template-columns:repeat(2,12px);gap:4px"><span style="height:12px;border-radius:3px;background:#DDE5E7"></span><span style="height:12px;border-radius:3px;background:#DDE5E7"></span><span style="height:12px;border-radius:3px;background:#2A74CE"></span><span style="height:12px;border-radius:0 0 12px 0;background:#DDE5E7"></span></div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5E6E78">04</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;margin-top:auto">
+          <h3 style="font-family:Manrope,sans-serif;margin:0;font-size:26px;font-weight:600;letter-spacing:-0.03em">SaaS Development</h3>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:15.5px;color:#3C4B55">
+            <li>Platform development</li><li>AI-powered SaaS</li><li>APIs</li><li>Dashboards</li><li>Automation</li>
+          </ul>
+          <span style="font-size:15px;font-weight:500;color:#137565">Learn more →</span>
+        </div>
+      </a>
+      <a class="hv-4" data-reveal="1" href="/mobile-app-development/" style="background:#FFFFFF;color:#0F1E2A;padding:32px;display:flex;flex-direction:column;gap:28px;min-height:340px;transition:background .3s ease">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div style="display:grid;grid-template-columns:repeat(2,12px);gap:4px"><span style="height:12px;border-radius:3px;background:#1B9C85"></span><span style="height:12px;border-radius:3px;background:#DDE5E7"></span><span style="height:12px;border-radius:3px;background:#159FA8"></span><span style="height:12px;border-radius:0 0 12px 0;background:#DDE5E7"></span></div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5E6E78">05</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;margin-top:auto">
+          <h3 style="font-family:Manrope,sans-serif;margin:0;font-size:26px;font-weight:600;letter-spacing:-0.03em">Mobile App Development</h3>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:15.5px;color:#3C4B55">
+            <li>iOS</li><li>Android</li><li>Cross-platform applications</li><li>Deployment and optimisation</li>
+          </ul>
+          <span style="font-size:15px;font-weight:500;color:#137565">Learn more →</span>
+        </div>
+      </a>
+      <a class="hv-5" data-reveal="1" href="/digital-marketing/" style="background:#F2F7F6;color:#0F1E2A;padding:32px;display:flex;flex-direction:column;gap:28px;min-height:340px;transition:background .3s ease">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div style="display:grid;grid-template-columns:repeat(2,12px);gap:4px"><span style="height:12px;border-radius:3px;background:#1B9C85"></span><span style="height:12px;border-radius:3px;background:#159FA8"></span><span style="height:12px;border-radius:3px;background:#2A74CE"></span><span style="height:12px;border-radius:0 0 12px 0;background:linear-gradient(135deg,#159FA8,#2A74CE)"></span></div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5E6E78">06</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;margin-top:auto">
+          <h3 style="font-family:Manrope,sans-serif;margin:0;font-size:26px;font-weight:600;letter-spacing:-0.03em">Digital Growth</h3>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:15.5px;color:#3C4B55">
+            <li>AI-powered SEO</li><li>Content</li><li>Conversion optimisation</li><li>Email marketing</li><li>Social media</li>
+          </ul>
+          <span style="font-size:15px;font-weight:500;color:#137565">Learn more →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="solutions" data-screen-label="AI section" style="position:relative;background:#0C1A24;color:#FFFFFF;overflow:hidden">
+  <div aria-hidden="true" style="position:absolute;left:-20%;bottom:-40%;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(27,156,133,.18) 0%,rgba(42,116,206,.08) 45%,transparent 70%)"></div>
+  <div style="position:relative;max-width:1240px;margin:0 auto;padding:clamp(80px,10vw,136px) clamp(20px,4vw,40px);display:flex;flex-direction:column;gap:clamp(40px,5vw,64px)">
+    <div data-reveal="1" style="display:flex;flex-direction:column;gap:18px;max-width:820px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:0.12em;text-transform:uppercase;color:#8FE0D0">02 · AI</span>
+      <h2 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(36px,5.2vw,68px);font-weight:600;letter-spacing:-0.045em;line-height:1.02;text-wrap:balance">Put AI to work inside your business</h2>
+      <p style="margin:0;font-size:18px;line-height:1.6;color:#B9C8D0;max-width:680px;text-wrap:pretty">We don't just add AI features. We integrate AI into real business processes to reduce repetitive work, improve customer experiences, and help teams make better decisions.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:24px;align-items:stretch">
+      <div role="tablist" aria-label="AI capabilities" style="display:flex;flex-direction:column;gap:8px">
+        
+          <button role="tab" aria-selected="true" type="button" data-ai-tab="0" id="ai-tab-0" aria-controls="ai-panel" style="text-align:left;cursor:pointer;font-family:inherit;padding:20px 22px;border-radius:14px;border:1px solid #1B9C85;background:rgba(27,156,133,.12);color:#FFFFFF;display:flex;flex-direction:column;gap:6px;transition:background .3s ease,border-color .3s ease">
+            <span style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="font-family:Manrope,sans-serif;font-size:20px;font-weight:600;letter-spacing:-0.025em">AI Agents</span><span data-tab-num style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8FE0D0">01</span></span>
+            <span data-tab-desc style="font-size:15px;line-height:1.5;color:#D3E0E6">Intelligent assistants designed around specific business workflows.</span>
+          </button>
+        
+          <button role="tab" aria-selected="false" type="button" data-ai-tab="1" id="ai-tab-1" aria-controls="ai-panel" style="text-align:left;cursor:pointer;font-family:inherit;padding:20px 22px;border-radius:14px;border:1px solid #22384A;background:rgba(255,255,255,.02);color:#FFFFFF;display:flex;flex-direction:column;gap:6px;transition:background .3s ease,border-color .3s ease">
+            <span style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="font-family:Manrope,sans-serif;font-size:20px;font-weight:600;letter-spacing:-0.025em">Workflow Automation</span><span data-tab-num style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#6E8594">02</span></span>
+            <span data-tab-desc style="font-size:15px;line-height:1.5;color:#93A6B1">Connect systems, eliminate repetitive tasks, and automate operations.</span>
+          </button>
+        
+          <button role="tab" aria-selected="false" type="button" data-ai-tab="2" id="ai-tab-2" aria-controls="ai-panel" style="text-align:left;cursor:pointer;font-family:inherit;padding:20px 22px;border-radius:14px;border:1px solid #22384A;background:rgba(255,255,255,.02);color:#FFFFFF;display:flex;flex-direction:column;gap:6px;transition:background .3s ease,border-color .3s ease">
+            <span style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="font-family:Manrope,sans-serif;font-size:20px;font-weight:600;letter-spacing:-0.025em">AI-Powered eCommerce</span><span data-tab-num style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#6E8594">03</span></span>
+            <span data-tab-desc style="font-size:15px;line-height:1.5;color:#93A6B1">Smart recommendations, search, customer support, and personalised experiences.</span>
+          </button>
+        
+          <button role="tab" aria-selected="false" type="button" data-ai-tab="3" id="ai-tab-3" aria-controls="ai-panel" style="text-align:left;cursor:pointer;font-family:inherit;padding:20px 22px;border-radius:14px;border:1px solid #22384A;background:rgba(255,255,255,.02);color:#FFFFFF;display:flex;flex-direction:column;gap:6px;transition:background .3s ease,border-color .3s ease">
+            <span style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="font-family:Manrope,sans-serif;font-size:20px;font-weight:600;letter-spacing:-0.025em">Business Intelligence</span><span data-tab-num style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#6E8594">04</span></span>
+            <span data-tab-desc style="font-size:15px;line-height:1.5;color:#93A6B1">Turn operational data into useful, actionable insights.</span>
+          </button>
+        
+      </div>
+      <div id="ai-panel" role="tabpanel" style="border-radius:18px;border:1px solid #22384A;background:rgba(255,255,255,.035);padding:clamp(22px,3vw,32px);display:flex;flex-direction:column;gap:22px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.06em;color:#8FA3AF">Example workflow · <span data-ai-title>AI Agents</span></span>
+          <span style="display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8FE0D0"><span style="width:7px;height:7px;border-radius:50%;background:#1B9C85;animation:tvPulse 2s infinite"></span>live</span>
+        </div>
+        <div style="position:relative;display:flex;flex-direction:column;gap:10px">
+          
+            <div data-flow="0" style="display:grid;grid-template-columns:40px minmax(0,1fr);gap:14px;align-items:stretch">
+              <div style="display:flex;flex-direction:column;align-items:center">
+                <span data-flow-node style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:12px;background:#123A3E;color:#FFFFFF;border:1px solid #1B9C85;transition:all .4s ease">01</span>
+                <span data-flow-line style="flex:1;width:2px;min-height:10px;background:#22384A;transition:background .4s ease"></span>
+              </div>
+              <div data-flow-card style="padding:9px 16px 14px;border-radius:12px;background:rgba(27,156,133,.14);border:1px solid #1B9C85;display:flex;flex-direction:column;gap:3px;transition:all .4s ease">
+                <span data-flow-kind style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#8FE0D0">Trigger</span>
+                <span data-flow-text style="font-size:16.5px;font-weight:500;color:#FFFFFF">Customer enquiry arrives</span>
+              </div>
+            </div>
+          
+            <div data-flow="1" style="display:grid;grid-template-columns:40px minmax(0,1fr);gap:14px;align-items:stretch">
+              <div style="display:flex;flex-direction:column;align-items:center">
+                <span data-flow-node style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:12px;background:transparent;color:#6E8594;border:1px solid #2A4152;transition:all .4s ease">02</span>
+                <span data-flow-line style="flex:1;width:2px;min-height:10px;background:#22384A;transition:background .4s ease"></span>
+              </div>
+              <div data-flow-card style="padding:9px 16px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid #22384A;display:flex;flex-direction:column;gap:3px;transition:all .4s ease">
+                <span data-flow-kind style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#6E8594">AI</span>
+                <span data-flow-text style="font-size:16.5px;font-weight:500;color:#93A6B1">Agent reads order history and policies</span>
+              </div>
+            </div>
+          
+            <div data-flow="2" style="display:grid;grid-template-columns:40px minmax(0,1fr);gap:14px;align-items:stretch">
+              <div style="display:flex;flex-direction:column;align-items:center">
+                <span data-flow-node style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:12px;background:transparent;color:#6E8594;border:1px solid #2A4152;transition:all .4s ease">03</span>
+                <span data-flow-line style="flex:1;width:2px;min-height:10px;background:#22384A;transition:background .4s ease"></span>
+              </div>
+              <div data-flow-card style="padding:9px 16px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid #22384A;display:flex;flex-direction:column;gap:3px;transition:all .4s ease">
+                <span data-flow-kind style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#6E8594">Action</span>
+                <span data-flow-text style="font-size:16.5px;font-weight:500;color:#93A6B1">Answers, or routes to your team</span>
+              </div>
+            </div>
+          
+            <div data-flow="3" style="display:grid;grid-template-columns:40px minmax(0,1fr);gap:14px;align-items:stretch">
+              <div style="display:flex;flex-direction:column;align-items:center">
+                <span data-flow-node style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:12px;background:transparent;color:#6E8594;border:1px solid #2A4152;transition:all .4s ease">04</span>
+                <span data-flow-line style="flex:1;width:2px;min-height:10px;background:transparent;transition:background .4s ease"></span>
+              </div>
+              <div data-flow-card style="padding:9px 16px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid #22384A;display:flex;flex-direction:column;gap:3px;transition:all .4s ease">
+                <span data-flow-kind style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#6E8594">Outcome</span>
+                <span data-flow-text style="font-size:16.5px;font-weight:500;color:#93A6B1">Resolved and logged in your CRM</span>
+              </div>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Platforms" style="background:#FFFFFF">
+  <div style="max-width:1240px;margin:0 auto;padding:clamp(80px,10vw,136px) clamp(20px,4vw,40px);display:flex;flex-direction:column;gap:clamp(40px,5vw,56px)">
+    <div data-reveal="1" style="display:flex;flex-direction:column;gap:18px;max-width:760px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:0.12em;text-transform:uppercase;color:#137565">03 · Platforms</span>
+      <h2 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(34px,4.6vw,56px);font-weight:600;letter-spacing:-0.04em;line-height:1.04;text-wrap:balance">Deep expertise where your business already lives</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:20px">
+      <div class="hv-6" data-reveal="1" style="border:1px solid #DFE6E8;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:transform .3s ease,box-shadow .3s ease">
+        <div style="padding:clamp(24px,3.5vw,40px);display:flex;flex-direction:column;gap:24px;flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><h3 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(30px,3.4vw,40px);font-weight:600;letter-spacing:-0.04em">Shopify</h3><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5E6E78">Apps · Themes · Plus</span></div>
+          <ul style="margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px">
+            <li style="padding:12px 0;border-top:1px solid #EAEFF0;font-size:16px">Store development</li><li style="padding:12px 0;border-top:1px solid #EAEFF0;font-size:16px">Custom apps</li>
+            <li style="padding:12px 0;border-top:1px solid #EAEFF0;font-size:16px">Theme development</li><li style="padding:12px 0;border-top:1px solid #EAEFF0;font-size:16px">Integrations</li>
+            <li style="padding:12px 0;border-top:1px solid #EAEFF0;font-size:16px">AI features</li><li style="padding:12px 0;border-top:1px solid #EAEFF0;font-size:16px">Ongoing optimisation</li>
+          </ul>
+        </div>
+        <div style="background:#0C1A24;padding:20px clamp(24px,3.5vw,40px);font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.75;color:#B9C8D0;overflow-x:auto;white-space:pre">
+<span style="color:#5E7585">$</span> shopify app deploy
+<span style="color:#8FE0D0">✓</span> Extensions bundled · <span style="color:#7FB0EC">admin</span>, <span style="color:#7FB0EC">theme</span>
+<span style="color:#8FE0D0">✓</span> New version released</div>
+      </div>
+      <div class="hv-6" data-reveal="1" style="border:1px solid #DFE6E8;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:transform .3s ease,box-shadow .3s ease">
+        <div style="padding:clamp(24px,3.5vw,40px);display:flex;flex-direction:column;gap:24px;flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><h3 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(30px,3.4vw,40px);font-weight:600;letter-spacing:-0.04em">WordPress</h3><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5E6E78">Core · Plugins · Woo</span></div>
+          <ul style="margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px">
+            <li style="padding:12px 0;border-top:1px solid #EAEFF0;font-size:16px">Custom development</li><li style="padding:12px 0;border-top:1px solid #EAEFF0;font-size:16px">WooCommerce</li>
+            <li style="padding:12px 0;border-top:1px solid #EAEFF0;font-size:16px">Custom plugins</li><li style="padding:12px 0;border-top:1px solid #EAEFF0;font-size:16px">Custom themes</li>
+            <li style="padding:12px 0;border-top:1px solid #EAEFF0;font-size:16px">Performance</li><li style="padding:12px 0;border-top:1px solid #EAEFF0;font-size:16px">Security</li>
+          </ul>
+        </div>
+        <div style="background:#0C1A24;padding:20px clamp(24px,3.5vw,40px);font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.75;color:#B9C8D0;overflow-x:auto;white-space:pre">
+<span style="color:#7FB0EC">add_action</span>( <span style="color:#8FE0D0">'woocommerce_order_status_completed'</span>,
+    [ $this, <span style="color:#8FE0D0">'sync_to_erp'</span> ] );</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Products" style="background:#F4F7F7;border-top:1px solid #EAEFF0">
+  <div style="max-width:1240px;margin:0 auto;padding:clamp(80px,10vw,136px) clamp(20px,4vw,40px);display:flex;flex-direction:column;gap:clamp(40px,5vw,56px)">
+    <div data-reveal="1" style="display:flex;flex-direction:column;gap:18px;max-width:760px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:0.12em;text-transform:uppercase;color:#137565">04 · Products</span>
+      <h2 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(34px,4.6vw,56px);font-weight:600;letter-spacing:-0.04em;line-height:1.04;text-wrap:balance">We build products, not just projects</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:20px">
+      <a class="hv-7" data-reveal="1" href="https://wordpress.org/plugins/exclusive-addons-for-elementor/" style="background:#FFFFFF;border:1px solid #DFE6E8;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;color:#0F1E2A;transition:transform .3s ease,box-shadow .3s ease">
+        <div style="aspect-ratio:16/10;background:#EAF0F0;position:relative"><div class="placeholder" data-slot="product-exclusive-addons" role="img" aria-label="Exclusive Addons screenshot"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#mk-d" fill="url(#tvg)"></use></svg></div></div>
+        <div style="padding:26px;display:flex;flex-direction:column;gap:10px;flex:1">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#137565">WordPress plugin</span>
+          <h3 style="font-family:Manrope,sans-serif;margin:0;font-size:22px;font-weight:600;letter-spacing:-0.025em">Exclusive Addons for Elementor</h3>
+          <p style="margin:0;font-size:15.5px;line-height:1.55;color:#3C4B55">A feature-rich Elementor addon with 100+ widgets.</p>
+          <span style="margin-top:auto;padding-top:10px;font-size:15px;font-weight:500;color:#137565">View on WordPress.org →</span>
+        </div>
+      </a>
+      <a class="hv-7" data-reveal="1" href="https://apps.shopify.com/darkify" style="background:#FFFFFF;border:1px solid #DFE6E8;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;color:#0F1E2A;transition:transform .3s ease,box-shadow .3s ease">
+        <div style="aspect-ratio:16/10;background:#EAF0F0;position:relative"><div class="placeholder" data-slot="product-darkify" role="img" aria-label="Darkify screenshot"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#mk-d" fill="url(#tvg)"></use></svg></div></div>
+        <div style="padding:26px;display:flex;flex-direction:column;gap:10px;flex:1">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#137565">Shopify app</span>
+          <h3 style="font-family:Manrope,sans-serif;margin:0;font-size:22px;font-weight:600;letter-spacing:-0.025em">Darkify</h3>
+          <p style="margin:0;font-size:15.5px;line-height:1.55;color:#3C4B55">A Shopify dark-mode application.</p>
+          <span style="margin-top:auto;padding-top:10px;font-size:15px;font-weight:500;color:#137565">View on Shopify App Store →</span>
+        </div>
+      </a>
+      <a class="hv-7" data-reveal="1" href="https://apps.shopify.com/stockpulse-stock-counter" style="background:#FFFFFF;border:1px solid #DFE6E8;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;color:#0F1E2A;transition:transform .3s ease,box-shadow .3s ease">
+        <div style="aspect-ratio:16/10;background:#EAF0F0;position:relative"><div class="placeholder" data-slot="product-stockpulse" role="img" aria-label="StockPulse screenshot"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#mk-d" fill="url(#tvg)"></use></svg></div></div>
+        <div style="padding:26px;display:flex;flex-direction:column;gap:10px;flex:1">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#137565">Shopify app</span>
+          <h3 style="font-family:Manrope,sans-serif;margin:0;font-size:22px;font-weight:600;letter-spacing:-0.025em">StockPulse</h3>
+          <p style="margin:0;font-size:15.5px;line-height:1.55;color:#3C4B55">A Shopify inventory/stock alert application.</p>
+          <span style="margin-top:auto;padding-top:10px;font-size:15px;font-weight:500;color:#137565">View on Shopify App Store →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Why TechVibes" style="background:#FFFFFF">
+  <div style="max-width:1240px;margin:0 auto;padding:clamp(80px,10vw,136px) clamp(20px,4vw,40px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:48px clamp(48px,7vw,112px);align-items:start">
+    <div data-reveal="1" style="display:flex;flex-direction:column;gap:18px;position:sticky;top:120px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:0.12em;text-transform:uppercase;color:#137565">05 · Why TechVibes</span>
+      <h2 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(34px,4.6vw,56px);font-weight:600;letter-spacing:-0.04em;line-height:1.04;text-wrap:balance">Built for businesses that expect more from technology</h2>
+      <svg width="120" height="120" viewBox="0 0 100 100" aria-hidden="true" style="margin-top:24px;opacity:.9"><use href="#mk-d" fill="url(#tvg)"></use></svg>
+    </div>
+    <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column">
+      <li data-reveal="1" style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:28px 0;border-top:1px solid #E3E9EA"><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#137565;padding-top:6px">01</span><div style="display:flex;flex-direction:column;gap:8px"><h3 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(22px,2.4vw,28px);font-weight:600;letter-spacing:-0.03em">Engineering-first</h3><p style="margin:0;font-size:16.5px;line-height:1.6;color:#3C4B55">Technology built with performance, maintainability, scalability, and security in mind.</p></div></li>
+      <li data-reveal="1" style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:28px 0;border-top:1px solid #E3E9EA"><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#137565;padding-top:6px">02</span><div style="display:flex;flex-direction:column;gap:8px"><h3 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(22px,2.4vw,28px);font-weight:600;letter-spacing:-0.03em">Business-focused</h3><p style="margin:0;font-size:16.5px;line-height:1.6;color:#3C4B55">Every solution starts with the business problem, not the technology.</p></div></li>
+      <li data-reveal="1" style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:28px 0;border-top:1px solid #E3E9EA"><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#137565;padding-top:6px">03</span><div style="display:flex;flex-direction:column;gap:8px"><h3 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(22px,2.4vw,28px);font-weight:600;letter-spacing:-0.03em">AI-ready</h3><p style="margin:0;font-size:16.5px;line-height:1.6;color:#3C4B55">Modern AI capabilities can be integrated into existing platforms and workflows.</p></div></li>
+      <li data-reveal="1" style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:28px 0;border-top:1px solid #E3E9EA"><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#137565;padding-top:6px">04</span><div style="display:flex;flex-direction:column;gap:8px"><h3 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(22px,2.4vw,28px);font-weight:600;letter-spacing:-0.03em">Long-term partnership</h3><p style="margin:0;font-size:16.5px;line-height:1.6;color:#3C4B55">Support, optimisation, maintenance, and continued development after launch.</p></div></li>
+      <li data-reveal="1" style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:28px 0;border-top:1px solid #E3E9EA;border-bottom:1px solid #E3E9EA"><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#137565;padding-top:6px">05</span><div style="display:flex;flex-direction:column;gap:8px"><h3 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(22px,2.4vw,28px);font-weight:600;letter-spacing:-0.03em">Open-source expertise</h3><p style="margin:0;font-size:16.5px;line-height:1.6;color:#3C4B55">Deep experience across WordPress and modern web technologies.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<section id="about" data-screen-label="Founder" style="background:#F4F7F7;border-top:1px solid #EAEFF0">
+  <div style="max-width:1240px;margin:0 auto;padding:clamp(80px,10vw,136px) clamp(20px,4vw,40px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px clamp(48px,6vw,96px);align-items:center">
+    <div data-reveal="1" style="position:relative;aspect-ratio:4/5;max-width:500px;width:100%;border-radius:18px;overflow:hidden;background:#E3EAEA">
+      <div class="placeholder" data-slot="founder-portrait" role="img" aria-label="Founder portrait"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#mk-d" fill="url(#tvg)"></use></svg></div>
+    </div>
+    <div data-reveal="1" style="display:flex;flex-direction:column;gap:24px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:0.12em;text-transform:uppercase;color:#137565">06 · Leadership</span>
+      <h2 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(34px,4.6vw,56px);font-weight:600;letter-spacing:-0.04em;line-height:1.04">Meet the founder</h2>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <span style="font-family:Manrope,sans-serif;font-size:24px;font-weight:600;letter-spacing:-0.025em">Muntasir M. Aumio</span>
+        <span style="font-size:16px;color:#4A5B66">Founder &amp; Director</span>
+      </div>
+      <p style="margin:0;font-size:17.5px;line-height:1.65;color:#3C4B55;max-width:560px;text-wrap:pretty">An experienced Full Stack Engineer with deep expertise in WordPress, Shopify, web development and modern digital technology. His work in the open-source community shapes how TechVibes engineers: built to standards, built to last.</p>
+      <ul style="margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:10px">
+        <li style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:#FFFFFF;border:1px solid #DFE6E8;font-size:15.5px;font-weight:500"><span style="width:8px;height:8px;border-radius:2px;background:#1B9C85"></span>WordPress Core Contributor</li>
+        <li style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:#FFFFFF;border:1px solid #DFE6E8;font-size:15.5px;font-weight:500"><span style="width:8px;height:8px;border-radius:2px;background:#159FA8"></span>WordCamp organiser</li>
+        <li style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:#FFFFFF;border:1px solid #DFE6E8;font-size:15.5px;font-weight:500"><span style="width:8px;height:8px;border-radius:2px;background:#2A74CE"></span>Extensive WordPress and Shopify experience</li>
+        <li style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:#FFFFFF;border:1px solid #DFE6E8;font-size:15.5px;font-weight:500"><span style="width:8px;height:8px;border-radius:0 0 8px 0;background:linear-gradient(135deg,#1B9C85,#2A74CE)"></span>Full-stack engineering background</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<SelectedWork />
+
+<section data-screen-label="Testimonials" style="background:#F4F7F7;border-top:1px solid #EAEFF0">
+  <div style="max-width:1240px;margin:0 auto;padding:clamp(80px,10vw,136px) clamp(20px,4vw,40px);display:flex;flex-direction:column;gap:clamp(40px,5vw,56px)">
+    <div data-reveal="1" style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:18px;max-width:720px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:0.12em;text-transform:uppercase;color:#137565">08 · Testimonials</span>
+        <h2 style="font-family:Manrope,sans-serif;margin:0;font-size:clamp(34px,4.6vw,56px);font-weight:600;letter-spacing:-0.04em;line-height:1.04;text-wrap:balance">Trusted by the people we work with</h2>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <span aria-label="Rated 4.95 out of 5" style="font-size:20px;letter-spacing:2px;color:#1B9C85">★★★★★</span>
+        <span style="font-size:15px;color:#3C4B55"><strong style="color:#0F1E2A;font-weight:600">4.95 of 5</strong> · based on user reviews</span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px">
+      <figure data-reveal="1" style="margin:0;background:#FFFFFF;border:1px solid #DFE6E8;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:24px"><blockquote style="margin:0;font-size:18px;line-height:1.55;letter-spacing:-0.01em;color:#0F1E2A;text-wrap:pretty">“Muntasir was super responsive and informative! He got my site running super fast in just one day – I really appreciate his work.”</blockquote><figcaption style="margin-top:auto;display:flex;flex-direction:column;gap:2px;padding-top:18px;border-top:1px solid #EEF2F3"><span style="font-weight:600;font-size:15.5px">Maria D.</span><span style="font-size:14px;color:#4A5B66">Co-Founder</span></figcaption></figure>
+      <figure data-reveal="1" style="margin:0;background:#FFFFFF;border:1px solid #DFE6E8;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:24px"><blockquote style="margin:0;font-size:18px;line-height:1.55;letter-spacing:-0.01em;color:#0F1E2A;text-wrap:pretty">“I'm very satisfied with the work overall. The pace and detail of our communication was excellent. Responded to all my questions quickly and completely.”</blockquote><figcaption style="margin-top:auto;display:flex;flex-direction:column;gap:2px;padding-top:18px;border-top:1px solid #EEF2F3"><span style="font-weight:600;font-size:15.5px">Susannah F.</span><span style="font-size:14px;color:#4A5B66">Founder</span></figcaption></figure>
+      <figure data-reveal="1" style="margin:0;background:#FFFFFF;border:1px solid #DFE6E8;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:24px"><blockquote style="margin:0;font-size:18px;line-height:1.55;letter-spacing:-0.01em;color:#0F1E2A;text-wrap:pretty">“Great to work with and helped get the job done. Couldn't have asked for me really.”</blockquote><figcaption style="margin-top:auto;display:flex;flex-direction:column;gap:2px;padding-top:18px;border-top:1px solid #EEF2F3"><span style="font-weight:600;font-size:15.5px">Dustin O.</span><span style="font-size:14px;color:#4A5B66">Co-Founder</span></figcaption></figure>
+      <figure data-reveal="1" style="margin:0;background:#FFFFFF;border:1px solid #DFE6E8;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:24px"><blockquote style="margin:0;font-size:18px;line-height:1.55;letter-spacing:-0.01em;color:#0F1E2A;text-wrap:pretty">“Excellent communication and got everything needed done quickly!”</blockquote><figcaption style="margin-top:auto;display:flex;flex-direction:column;gap:2px;padding-top:18px;border-top:1px solid #EEF2F3"><span style="font-weight:600;font-size:15.5px">Philia K.</span><span style="font-size:14px;color:#4A5B66">Food Blogger</span></figcaption></figure>
+      <figure data-reveal="1" style="margin:0;background:#FFFFFF;border:1px solid #DFE6E8;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:24px"><blockquote style="margin:0;font-size:18px;line-height:1.55;letter-spacing:-0.01em;color:#0F1E2A;text-wrap:pretty">“Quick, responsive and knowledgable! Did a fantastic job. Highly recommend.”</blockquote><figcaption style="margin-top:auto;display:flex;flex-direction:column;gap:2px;padding-top:18px;border-top:1px solid #EEF2F3"><span style="font-weight:600;font-size:15.5px">Yasmine R.</span><span style="font-size:14px;color:#4A5B66">Marketing Head</span></figcaption></figure>
+      <figure data-reveal="1" style="margin:0;background:#FFFFFF;border:1px solid #DFE6E8;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:24px"><blockquote style="margin:0;font-size:18px;line-height:1.55;letter-spacing:-0.01em;color:#0F1E2A;text-wrap:pretty">“Muntasir did a fantastic job. I highly recommend him!”</blockquote><figcaption style="margin-top:auto;display:flex;flex-direction:column;gap:2px;padding-top:18px;border-top:1px solid #EEF2F3"><span style="font-weight:600;font-size:15.5px">Scott L.</span><span style="font-size:14px;color:#4A5B66">Founder &amp; CEO</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="metrics" data-screen-label="Numbers" style="background:#FFFFFF;border-top:1px solid #EAEFF0">
+  <div style="max-width:1240px;margin:0 auto;padding:clamp(64px,8vw,104px) clamp(20px,4vw,40px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:40px">
+    <div style="display:flex;flex-direction:column;gap:10px;padding-left:20px;border-left:2px solid #1B9C85"><span style="font-family:Manrope,sans-serif;font-size:clamp(48px,6vw,76px);font-weight:600;letter-spacing:-0.05em;line-height:1;font-variant-numeric:tabular-nums" data-count="1000" data-format="int-plus">1,000+</span><span style="font-size:16px;color:#3C4B55">Clients served</span></div>
+    <div style="display:flex;flex-direction:column;gap:10px;padding-left:20px;border-left:2px solid #159FA8"><span style="font-family:Manrope,sans-serif;font-size:clamp(48px,6vw,76px);font-weight:600;letter-spacing:-0.05em;line-height:1;font-variant-numeric:tabular-nums" data-count="4.95" data-format="dec2">4.95</span><span style="font-size:16px;color:#3C4B55">Average client rating, out of 5</span></div>
+    <div style="display:flex;flex-direction:column;gap:10px;padding-left:20px;border-left:2px solid #2A74CE"><span style="font-family:Manrope,sans-serif;font-size:clamp(48px,6vw,76px);font-weight:600;letter-spacing:-0.05em;line-height:1;font-variant-numeric:tabular-nums" data-count="15" data-format="plus">15+</span><span style="font-size:16px;color:#3C4B55">Years of engineering experience</span></div>
+  </div>
+</section>
+
+<CTA id="contact" title="Your next big idea," highlight="built smarter." text="Tell us what you're trying to build, improve, or automate. We'll help you turn the idea into a practical technology solution." />
+</BaseLayout>
+
+<script>
+  import '../scripts/home.ts';
+</script>

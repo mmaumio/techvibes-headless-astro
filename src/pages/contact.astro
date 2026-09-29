@@ -1,0 +1,188 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { company } from '../data/site';
+
+const serviceOptions = [
+  'WordPress Development', 'Shopify Development', 'Mobile App Development',
+  'SAAS App Development', 'AI & Automation', 'Digital Marketing', 'Other',
+];
+
+const faqs = [
+  { q: 'What services does TechVibes IT offer?', a: 'TechVibes IT provides AI-powered e-commerce websites, Shopify apps, WordPress plugins, and digital marketing services. We help SMEs automate, scale, and grow through smart web solutions and custom technology development.' },
+  { q: 'What platforms do you build solutions for?', a: 'We specialize in Shopify, WordPress (especially Elementor), and custom web application development. We also offer integration with other platforms and APIs as required by client needs.' },
+  { q: 'Can you integrate AI features into my Website?', a: 'Yes, our team regularly integrates AI-driven features such as automated product recommendations, smart search, chatbots, and business automation tools to help maximize user engagement and business efficiency.' },
+  { q: 'Which industries do you specialize in?', a: 'Our primary focus is on supporting small and medium-sized enterprises (SMEs), startups, and digital-first businesses. We also partner with agencies and non-profits seeking modern, scalable web and e-commerce solutions.' },
+  { q: 'How do I request your services?', a: "Simply contact us through our website or email, and provide details of your requirements. We'll schedule a free consultation to understand your vision and provide a project plan and quote." },
+  { q: 'What is your project development process?', a: "We follow a clear project workflow that includes consultation, planning, design, development, testing, deployment, and training. Communication is transparent at every stage, so you'll always know the progress." },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+<BaseLayout title="Contact Us" description="Your next project starts with a conversation. Get in touch with TechVibes IT.">
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
+
+  <PageHero eyebrow="Contact Us" title="Your Next Project Starts with a <span class='gradient-text'>Conversation.</span>" />
+
+  <section>
+    <div class="container section contact-grid">
+      <div data-reveal class="card contact-form-card">
+        <h2 class="h3" style="font-size:clamp(26px,2.8vw,34px)">Get in touch</h2>
+        <form class="contact-form" method="post" action="/api/contact" data-contact-form novalidate>
+          <div class="contact-form__row">
+            <div class="field">
+              <label for="first-name">First name <span class="req">*</span></label>
+              <input id="first-name" name="firstName" autocomplete="given-name" required />
+            </div>
+            <div class="field">
+              <label for="last-name">Last name <span class="req">*</span></label>
+              <input id="last-name" name="lastName" autocomplete="family-name" required />
+            </div>
+          </div>
+          <div class="contact-form__row">
+            <div class="field">
+              <label for="email">Email <span class="req">*</span></label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <label for="phone">Phone Number</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" />
+            </div>
+          </div>
+          <div class="contact-form__row">
+            <div class="field">
+              <label for="service">Services</label>
+              <select id="service" name="service">
+                <option value="">Select a service</option>
+                {serviceOptions.map((o) => <option>{o}</option>)}
+              </select>
+            </div>
+            <div class="field">
+              <label for="budget">Budget</label>
+              <input id="budget" name="budget" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="requirements">Requirements</label>
+            <textarea id="requirements" name="requirements" rows="6"></textarea>
+          </div>
+          <!-- Honeypot: left empty by people, filled in by bots -->
+          <div class="sr-only" aria-hidden="true">
+            <label for="website">Website</label>
+            <input id="website" name="website" tabindex="-1" autocomplete="off" />
+          </div>
+          <div class="contact-form__footer">
+            <button type="submit" class="btn btn--dark">Submit <span class="arrow" aria-hidden="true">→</span></button>
+            <p class="contact-form__status" role="status" aria-live="polite" data-form-status></p>
+          </div>
+        </form>
+      </div>
+
+      <div class="stack" style="gap:16px">
+        <div data-reveal class="card contact-side">
+          <span class="eyebrow">Email</span>
+          <h3 class="h3" style="font-size:24px">Need Expert Help?</h3>
+          <p>Prefer emailing us directly? We're just one click away. Share your project details, ideas, or questions.</p>
+          <a href={`mailto:${company.email}`} class="contact-side__link">{company.email} →</a>
+        </div>
+        <div data-reveal class="card contact-side contact-side--dark">
+          <span class="eyebrow eyebrow--light">Meeting</span>
+          <h3 class="h3" style="font-size:24px">Schedule a Meeting</h3>
+          <p>Want to discuss your project? Pick a time that works best for you and let's dive into your ideas, budget, and next steps.</p>
+          <a href={company.scheduleUrl} class="btn btn--white" style="align-self:flex-start;height:48px">Schedule now <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+        <div data-reveal class="card contact-side">
+          <span class="eyebrow">Office</span>
+          <address>{company.address}</address>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--soft">
+    <div class="container section faq-grid">
+      <div data-reveal class="stack" style="gap:18px">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="h2">Frequently asked questions</h2>
+      </div>
+      <div class="faq" data-reveal>
+        {faqs.map((f, i) => (
+          <details open={i === 0}>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact-grid {
+    display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 24px; align-items: start;
+  }
+  @media (max-width: 960px) { .contact-grid { grid-template-columns: minmax(0, 1fr); } }
+  .contact-form-card { padding: clamp(24px, 4vw, 44px); display: flex; flex-direction: column; gap: 28px; }
+  .contact-form { display: flex; flex-direction: column; gap: 20px; }
+  .contact-form__row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 20px; }
+  .contact-form__footer { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+  .contact-form__status { margin: 0; font-size: 15px; color: var(--text); }
+  .contact-form__status.is-error { color: #B42318; }
+  .contact-form__status.is-ok { color: var(--teal-dark); }
+
+  .contact-side { padding: 28px; display: flex; flex-direction: column; gap: 12px; }
+  .contact-side p { margin: 0; font-size: 16px; line-height: 1.6; color: var(--text); }
+  .contact-side address { font-style: normal; font-size: 16px; line-height: 1.6; color: var(--text); }
+  .contact-side__link { font-size: 16px; font-weight: 500; padding-top: 4px; }
+  .contact-side--dark { background: var(--navy); border-color: var(--navy); color: #FFFFFF; }
+  .contact-side--dark p { color: #B9C8D0; }
+
+  .faq-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+    gap: 40px clamp(48px, 7vw, 112px); align-items: start;
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const status = document.querySelector<HTMLElement>('[data-form-status]');
+  const setStatus = (msg: string, kind: 'ok' | 'error' | '' = '') => {
+    if (!status) return;
+    status.textContent = msg;
+    status.className = 'contact-form__status' + (kind ? ` is-${kind}` : '');
+  };
+
+  const params = new URLSearchParams(location.search);
+  if (params.has('sent')) setStatus("Thank you. Your message has been sent and we'll be in touch shortly.", 'ok');
+  if (params.has('error')) setStatus('Sorry, your message could not be sent. Please email hello@techvibesit.com instead.', 'error');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    button.disabled = true;
+    setStatus('Sending…');
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'failed');
+      form.reset();
+      setStatus("Thank you. Your message has been sent and we'll be in touch shortly.", 'ok');
+    } catch {
+      setStatus('Sorry, your message could not be sent. Please email hello@techvibesit.com instead.', 'error');
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>

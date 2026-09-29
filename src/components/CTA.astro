@@ -1,0 +1,38 @@
+---
+import Mark from './Mark.astro';
+interface Props {
+  title?: string;
+  highlight?: string;
+  text?: string;
+  primaryLabel?: string;
+  primaryHref?: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
+  id?: string;
+}
+const {
+  // Wording from the live site's CTA block
+  title = 'Your Next Big Idea,',
+  highlight = 'Built Smarter',
+  text = 'From websites to apps, we create digital experiences powered by AI that grow your business faster.',
+  primaryLabel = 'Start Your Project',
+  primaryHref = '/contact/',
+  secondaryLabel = "Let's Talk",
+  secondaryHref = '/contact/',
+  id,
+} = Astro.props;
+---
+<section class="cta" id={id} aria-label="Start a project">
+  <div class="cta__panel">
+    <div class="cta__bg" aria-hidden="true"></div>
+    <div class="cta__mark" aria-hidden="true"><Mark size={420} /></div>
+    <div class="container cta__inner">
+      <h2 class="cta__title">{title} <span class="gradient-text">{highlight}</span></h2>
+      <p class="cta__text">{text}</p>
+      <div class="cta__actions">
+        <a href={primaryHref} class="btn btn--white">{primaryLabel} <span class="arrow" aria-hidden="true">→</span></a>
+        {secondaryLabel && <a href={secondaryHref} class="btn btn--ghost-light">{secondaryLabel}</a>}
+      </div>
+    </div>
+  </div>
+</section>

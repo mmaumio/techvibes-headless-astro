@@ -1,0 +1,23 @@
+---
+import { projects } from '../data/work';
+import FeaturedProject from './FeaturedProject.astro';
+import ProjectCard from './ProjectCard.astro';
+
+const featured = projects.find((p) => p.featured) ?? projects[0];
+const rest = projects.filter((p) => p !== featured).slice(0, 4);
+---
+<section id="work" style="background:#FFFFFF">
+  <div class="container section stack" style="gap:clamp(40px,5vw,56px)">
+    <div data-reveal style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+      <div class="stack" style="gap:18px">
+        <span class="eyebrow">07 · Work</span>
+        <h2 class="h2">Selected work</h2>
+      </div>
+      <a href="/work/" style="font-size:16px;font-weight:500">View all work →</a>
+    </div>
+    <FeaturedProject project={featured} />
+    <div class="grid-auto" style="--min:240px">
+      {rest.map((p) => <ProjectCard project={p} />)}
+    </div>
+  </div>
+</section>

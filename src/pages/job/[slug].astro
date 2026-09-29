@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CTA from '../../components/CTA.astro';
+import { getJobs, getSeoHead, decode, termNames, formatDate, localiseLinks } from '../../lib/wp';
+
+export async function getStaticPaths() {
+  const jobs = await getJobs();
+  return jobs.map((job) => ({ params: { slug: job.slug }, props: { job } }));
+}
+
+const { job } = Astro.props;
+const title = decode(job.title?.rendered);
+const types = termNames(job);
+const application = String(job.meta?._application ?? '').trim();
+const applyHref = application.includes('@') && !application.startsWith('http')
+  ? `mailto:${application}?subject=${encodeURIComponent(`Application: ${title}`)}`
+  : application || job.link;
+const filled = Number(job.meta?._filled) === 1;
+const seoHead = await getSeoHead(job.link);
+
+const jobSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'JobPosting',
+  title,
+  datePosted: job.date_gmt ? `${job.date_gmt}Z` : job.date,
+  description: job.content?.rendered ?? '',
+  hiringOrganization: { '@type': 'Organization', name: 'TechVibes IT Ltd', sameAs: 'https://techvibesit.com' },
+  ...(job.meta?._job_location && {
+    jobLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', addressLocality: job.meta._job_location, addressCountry: 'GB' } },
+  }),
+  ...(types.length && { employmentType: types.map((t: string) => t.toUpperCase().replace(/[\s-]+/g, '_')) }),
+};
+---
+<BaseLayout title={title} seoHead={seoHead}>
+  {!seoHead && <script type="application/ld+json" slot="head" set:html={JSON.stringify(jobSchema)} />}
+
+  <article>
+    <header class="page-hero">
+      <div class="page-hero__grid" aria-hidden="true"></div>
+      <div class="container">
+        <div class="page-hero__inner" style="max-width:960px">
+          <a href="/career/" class="mono" style="font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase">← All roles</a>
+          <h1 class="h1" style="font-size:clamp(34px,4.6vw,60px)">{title}</h1>
+          <div class="job-meta">
+            {job.meta?._job_location && <span>{job.meta._job_location}</span>}
+            {types.map((t) => <span>{t}</span>)}
+            <span>Posted {formatDate(job.date)}</span>
+            {filled && <span class="is-filled">Position filled</span>}
+          </div>
+          {!filled && (
+            <div style="padding-top:6px">
+              <a href={applyHref} class="btn btn--dark">Apply for this job <span class="arrow" aria-hidden="true">→</span></a>
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+
+    <div class="container section">
+      <div class="wp-content" style="max-width:760px" set:html={localiseLinks(job.content?.rendered)} />
+      {!filled && (
+        <div class="card apply-box">
+          <div class="stack" style="gap:6px">
+            <h2 class="h3" style="font-size:24px">Interested in this role?</h2>
+            <p style="margin:0;color:var(--text)">Send us your CV and a short note about what you've built.</p>
+          </div>
+          <a href={applyHref} class="btn btn--dark">Apply now <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      )}
+    </div>
+  </article>
+
+  <CTA />
+</BaseLayout>
+
+<style>
+  .job-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+  .job-meta span {
+    font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.04em; color: var(--muted);
+    padding: 6px 11px; border-radius: 6px; background: #FFFFFF; border: 1px solid #E1E8EA;
+  }
+  .job-meta .is-filled { color: #B42318; border-color: #F3D0CC; }
+  .apply-box {
+    max-width: 760px; margin-top: 56px; padding: 28px; display: flex; justify-content: space-between;
+    align-items: center; gap: 20px; flex-wrap: wrap; background: var(--soft);
+  }
+</style>

@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CTA from '../../components/CTA.astro';
+import { getPosts, decode, featuredImage, authorName, termNames, formatDate } from '../../lib/wp';
+
+const posts = await getPosts();
+const excerpt = (p: any) => {
+  const text = decode(p.excerpt?.rendered ?? '').replace(/\s+/g, ' ').replace(/\[…\]|\[&hellip;\]/g, '').trim();
+  return text.length > 190 ? text.slice(0, 187).replace(/\s+\S*$/, '') + '…' : text;
+};
+---
+<BaseLayout title="Blog" description="Insights on WordPress, Shopify, AI and running a faster, safer website, from the TechVibes IT team.">
+  <PageHero eyebrow="Insights" title="Blog" intro="Practical notes on WordPress, Shopify, AI and running a faster, safer website." />
+
+  <section>
+    <div class="container section">
+      {posts.length ? (
+        <div class="posts">
+          {posts.map((post, i) => {
+            const img = featuredImage(post);
+            const cats = termNames(post);
+            return (
+              <a data-reveal href={`/${post.slug}/`} class:list={['card', 'post-card', { 'post-card--lead': i === 0 }]}>
+                <div class="post-card__media">
+                  {img?.source_url ? (
+                    <img src={img.source_url} alt={img.alt_text || ''} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+                  ) : (
+                    <div class="placeholder" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#mk-d" fill="url(#tvg)"></use></svg></div>
+                  )}
+                </div>
+                <div class="post-card__body">
+                  <div class="post-card__meta">
+                    <time datetime={post.date}>{formatDate(post.date)}</time>
+                    {cats.slice(0, 2).map((c) => <span>{c}</span>)}
+                  </div>
+                  <h2 class="h3 post-card__title" set:html={post.title?.rendered} />
+                  {excerpt(post) && <p class="post-card__excerpt">{excerpt(post)}</p>}
+                  <div class="post-card__foot">
+                    {authorName(post) && <span>By {authorName(post)}</span>}
+                    <span class="link-arrow">Read More →</span>
+                  </div>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      ) : (
+        <p class="body-lg">New articles are on their way.</p>
+      )}
+    </div>
+  </section>
+
+  <CTA />
+</BaseLayout>
+
+<style>
+  .posts { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+  .post-card { overflow: hidden; }
+  .post-card__media { position: relative; aspect-ratio: 16 / 9; background: #EAF0F0; overflow: hidden; }
+  .post-card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .post-card__body { padding: 24px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .post-card__meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; color: var(--muted); }
+  .post-card__meta span { color: var(--teal-dark); text-transform: uppercase; }
+  .post-card__title { font-size: 22px; letter-spacing: -0.025em; line-height: 1.25; }
+  .post-card__excerpt { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--text); }
+  .post-card__foot { margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; gap: 12px; font-size: 14.5px; color: var(--muted); }
+
+  @media (min-width: 900px) {
+    .post-card--lead { grid-column: 1 / -1; display: grid; grid-template-columns: 1.15fr 1fr; }
+    .post-card--lead .post-card__media { aspect-ratio: auto; min-height: 340px; }
+    .post-card--lead .post-card__body { padding: clamp(28px, 4vw, 48px); justify-content: center; }
+    .post-card--lead .post-card__title { font-size: clamp(28px, 3vw, 38px); letter-spacing: -0.035em; }
+    .post-card--lead .post-card__excerpt { font-size: 17px; }
+    .post-card--lead .post-card__foot { margin-top: 8px; }
+  }
+</style>

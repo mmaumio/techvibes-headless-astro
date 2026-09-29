@@ -1,0 +1,85 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CTA from '../components/CTA.astro';
+import Mark from '../components/Mark.astro';
+import type { ServicePage } from '../data/services-content';
+
+interface Props { page: ServicePage }
+const { page } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+<BaseLayout title={page.eyebrow} description={page.metaDescription}>
+  <PageHero eyebrow={page.eyebrow} title={page.title} intro={page.intro} wide>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;padding-top:8px">
+      <a href="/contact/" class="btn btn--dark">Start Your Project <span class="arrow" aria-hidden="true">→</span></a>
+      <a href="#details" class="btn btn--outline">What we offer</a>
+    </div>
+  </PageHero>
+
+  <nav aria-label="On this page" class="svc-index">
+    <div class="container svc-index__inner">
+      {page.sections.map((s, i) => (
+        <a href={`#s${i + 1}`}><span class="mono">{pad(i + 1)}</span>{s.title}</a>
+      ))}
+    </div>
+  </nav>
+
+  <div id="details">
+    {page.sections.map((section, i) => (
+      <section id={`s${i + 1}`} class:list={['svc-section', { 'section--soft': i % 2 === 1 }]}>
+        <div class="container section svc-section__grid">
+          <div data-reveal class="svc-section__head">
+            <span class="eyebrow">{pad(i + 1)} · {page.eyebrow}</span>
+            <h2 class="h2">{section.title}</h2>
+            {section.intro && <p class="body-lg">{section.intro}</p>}
+            {i === 0 && <Mark size={96} style="margin-top:16px;opacity:.9" />}
+          </div>
+          <ol class="svc-points">
+            {section.points.map((pt, j) => (
+              <li data-reveal>
+                <span class="mono svc-points__n">{pad(j + 1)}</span>
+                <div class="stack" style="gap:8px">
+                  {pt.title && <h3 class="h3 svc-points__title">{pt.title}</h3>}
+                  <p class:list={['svc-points__text', { 'svc-points__text--solo': !pt.title }]}>{pt.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    ))}
+  </div>
+
+  <CTA />
+</BaseLayout>
+
+<style>
+  .svc-index { border-bottom: 1px solid #EAEFF0; background: var(--soft-2); }
+  .svc-index__inner {
+    display: flex; gap: 8px 28px; overflow-x: auto; padding-top: 18px; padding-bottom: 18px;
+    scrollbar-width: none;
+  }
+  .svc-index__inner::-webkit-scrollbar { display: none; }
+  .svc-index a { display: inline-flex; gap: 10px; align-items: baseline; white-space: nowrap; font-size: 15px; font-weight: 500; color: var(--text); }
+  .svc-index a:hover { color: var(--teal-dark); }
+  .svc-index .mono { font-size: 11.5px; color: var(--teal-dark); }
+
+  .svc-section__grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: 48px clamp(48px, 7vw, 112px); align-items: start;
+  }
+  .svc-section__head { display: flex; flex-direction: column; gap: 18px; position: sticky; top: 120px; }
+  @media (max-width: 900px) { .svc-section__head { position: static; } }
+
+  .svc-points { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
+  .svc-points li {
+    display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 16px;
+    padding: 28px 0; border-top: 1px solid var(--line);
+  }
+  .svc-points li:last-child { border-bottom: 1px solid var(--line); }
+  .svc-points__n { font-size: 13px; color: var(--teal-dark); padding-top: 6px; }
+  .svc-points__title { font-size: clamp(22px, 2.4vw, 28px); }
+  .svc-points__text { margin: 0; font-size: 16.5px; line-height: 1.6; color: var(--text); }
+  .svc-points__text--solo { font-family: var(--font-display); font-size: clamp(19px, 2vw, 23px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.35; color: var(--ink); }
+</style>

@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CTA from '../components/CTA.astro';
+import { getJobs, decode, termNames, formatDate } from '../lib/wp';
+
+const jobs = (await getJobs()).filter((j) => !Number(j.meta?._filled));
+---
+<BaseLayout title="Career" description="Careers at TechVibes IT. See our open roles in WordPress, Shopify and AI development.">
+  <PageHero eyebrow="Career" title="Currently hiring. <span class='gradient-text'>Yes, really,</span> the posting isn't decorative." wide />
+
+  <section>
+    <div class="container section stack" style="gap:clamp(32px,4vw,48px)">
+      <div data-reveal style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+        <div class="stack" style="gap:14px">
+          <span class="eyebrow">Open roles</span>
+          <h2 class="h2" style="font-size:clamp(30px,3.6vw,44px)">Join the team</h2>
+        </div>
+        <span class="mono" style="font-size:13px;color:var(--muted)">{jobs.length} {jobs.length === 1 ? 'position' : 'positions'}</span>
+      </div>
+
+      {jobs.length ? (
+        <ul class="jobs">
+          {jobs.map((job) => {
+            const types = termNames(job);
+            return (
+              <li data-reveal>
+                <a href={`/job/${job.slug}/`} class="job">
+                  <div class="stack" style="gap:10px">
+                    <h3 class="h3 job__title">{decode(job.title?.rendered)}</h3>
+                    <div class="job__meta">
+                      {job.meta?._job_location && <span>{job.meta._job_location}</span>}
+                      {types.map((t) => <span>{t}</span>)}
+                      {Number(job.meta?._remote_position) ? <span>Remote</span> : null}
+                      <span>Posted {formatDate(job.date)}</span>
+                    </div>
+                  </div>
+                  <span class="job__cta">View role <span aria-hidden="true">→</span></span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <div class="card" style="padding:32px">
+          <p class="body-lg" style="margin:0">There are no open roles right now. You're welcome to send your CV to <a href="mailto:hello@techvibesit.com">hello@techvibesit.com</a>.</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <CTA />
+</BaseLayout>
+
+<style>
+  .jobs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+  .job {
+    display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap;
+    padding: 28px 8px; border-bottom: 1px solid var(--line); color: var(--ink);
+    transition: background .25s ease, padding .25s ease;
+  }
+  .job:hover { background: #F5F8F8; color: var(--ink); padding-left: 20px; padding-right: 20px; }
+  .job__title { font-size: clamp(22px, 2.4vw, 28px); }
+  .job__meta { display: flex; flex-wrap: wrap; gap: 8px; }
+  .job__meta span {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; color: var(--muted);
+    padding: 5px 10px; border-radius: 6px; background: var(--soft); border: 1px solid #E6ECED;
+  }
+  .job__cta { font-size: 15.5px; font-weight: 500; color: var(--teal-dark); white-space: nowrap; }
+</style>
