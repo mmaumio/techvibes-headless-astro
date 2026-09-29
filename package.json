@@ -20,5 +20,8 @@
     "@fontsource/onest": "^5.3.1",
     "astro": "^7.3.5",
     "worker-mailer": "^1.2.1"
+  },
+  "devDependencies": {
+    "wrangler": "^4.143.0"
   }
 }

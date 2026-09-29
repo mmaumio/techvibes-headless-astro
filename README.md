@@ -1,7 +1,7 @@
 # TechVibes IT website (Astro)
 
 The TechVibes IT site rebuilt with [Astro](https://astro.build), in the new
-design, deployed as static HTML on Cloudflare Pages. WordPress stays on
+design, deployed as a Cloudflare Worker that serves static HTML. WordPress stays on
 `techvibesit.com` and acts as a headless CMS: blog posts, legal pages and job
 listings are pulled from its REST API at build time.
 
@@ -37,20 +37,23 @@ npm run build      # outputs to dist/
 
 Node 22.12 or newer is required.
 
-## Deploy: GitHub + Cloudflare Pages
+## Deploy: GitHub + Cloudflare Workers
 
-1. Push this folder to a new GitHub repository.
-2. Cloudflare dashboard > Workers & Pages > your Pages project (or Create > Pages > Connect to Git) and select the repo.
-3. Build settings:
-   - Framework preset: **Astro**
+The site runs as the Worker **techvibes-headless-astro** (see `wrangler.jsonc`;
+the `name` there must match the Worker's name in Cloudflare). Every page is a
+static file from `dist/`; only `/api/*` runs code (`worker/`).
+
+Cloudflare > Workers & Pages > techvibes-headless-astro > Settings:
+
+1. **Builds** (connected to this GitHub repo, branch `main`):
    - Build command: `npm run build`
-   - Build output directory: `dist`
-4. Settings > Variables and Secrets (Production and Preview):
-   - `NODE_VERSION` = `22`
-   - `WP_URL` = `https://techvibesit.com`
-   - `SITE_NOINDEX` = `true` (until cutover)
-   - Contact form: `SMTP_USER` and `SMTP_PASS` (secrets), `CONTACT_TO`. See Contact form below.
-5. Custom domains: keep `astro.techvibesit.com` attached to the project.
+   - Deploy command: `npx wrangler deploy`
+   - **Build variables** (used while building): `NODE_VERSION` = `22`,
+     `WP_URL` = `https://techvibesit.com`, `SITE_NOINDEX` = `true` (until cutover)
+2. **Variables and Secrets** (used by the running site, for the contact form):
+   `SMTP_USER` and `SMTP_PASS` (secrets), `CONTACT_TO`. See Contact form below.
+   `keep_vars` in `wrangler.jsonc` stops deploys from wiping these.
+3. **Domains & Routes**: `new.techvibesit.com` (test).
 
 The build log lists what it pulled from WordPress, e.g.
 `[wp] Loaded 3 item(s) from posts`. If WordPress can't be reached (or a
@@ -61,11 +64,11 @@ to deliberately build without WordPress content.
 
 ## Contact form
 
-`functions/api/contact.js` is a Cloudflare Pages Function that sends each
-enquiry through your Hostinger mailbox over SMTP (`smtp.hostinger.com`,
-port 465). Reply-To is set to the visitor, so hitting Reply answers them.
+`worker/contact.js` handles `POST /api/contact` and sends each enquiry through
+your Hostinger mailbox over SMTP (`smtp.hostinger.com`, port 465). Reply-To is
+set to the visitor, so hitting Reply answers them.
 
-Set in Cloudflare Pages > Settings > Variables and Secrets (Production), then redeploy:
+Set in the Worker's **Settings > Variables and Secrets**:
 
 | Name | Value | Type |
 |---|---|---|
@@ -74,17 +77,22 @@ Set in Cloudflare Pages > Settings > Variables and Secrets (Production), then re
 | `CONTACT_TO` | where enquiries arrive, e.g. `hello@techvibesit.com` | Text |
 | `SMTP_HOST` / `SMTP_PORT` | optional, default `smtp.hostinger.com` / `465` | Text |
 
-Until `SMTP_USER` and `SMTP_PASS` are set, the form asks visitors to email
-`hello@techvibesit.com`. Failed sends are logged in the deployment's
-Functions > Real-time logs as `[contact] SMTP send failed: ...`.
+Troubleshooting:
+- `/api/contact?check=1` shows whether the handler is live and which settings it
+  can see (never the password).
+- Submit the form from `/contact/?debug=1` to see the reason a send failed.
+- Logs: the Worker's **Observability** tab, look for `[contact]`.
+
+Local test: put the same variables in a `.dev.vars` file (never committed), run
+`npm run build`, then `npx wrangler dev`.
 
 ## Rebuild automatically when WordPress changes
 
-1. Cloudflare Pages > Settings > Builds > Deploy hooks > add a hook, copy the URL.
+1. Worker > Settings > Builds > Deploy Hooks > create a hook for `main`, copy the URL.
 2. In `wp-config.php` on WordPress:
 
    ```php
-   define('ASTRO_DEPLOY_HOOK', 'https://api.cloudflare.com/client/v4/pages/webhooks/deploy_hooks/XXXX');
+   define('ASTRO_DEPLOY_HOOK', 'https://api.cloudflare.com/client/v4/workers/builds/deploy_hooks/XXXX');
    ```
 
 3. Add as a small plugin or code snippet:
@@ -113,7 +121,7 @@ Cache > REST API) so rebuilds get fresh content.
 ## Cutover checklist (when this replaces WordPress on techvibesit.com)
 
 1. Move WordPress to `cms.techvibesit.com` and set its Site URL there.
-2. Set `WP_URL=https://cms.techvibesit.com` and `SITE_NOINDEX=false` in Cloudflare.
+2. Set the build variables `WP_URL=https://cms.techvibesit.com` and `SITE_NOINDEX=false`.
 3. Update `company.scheduleUrl` in `src/data/site.ts` if booking stays on WordPress.
-4. Add `techvibesit.com` as a custom domain on the Pages project.
+4. Add `techvibesit.com` (and `www`) under the Worker's Domains & Routes.
 5. Redeploy, then check the sitemap at `/sitemap-index.xml` and submit it in Search Console.

@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Must match the Worker's name in the Cloudflare dashboard.
+  "name": "techvibes-headless-astro",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-06-01",
+
+  "assets": {
+    // Astro's static build output
+    "directory": "./dist",
+    "binding": "ASSETS",
+    // Serve our designed 404 page for unknown URLs
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+    // Only the contact form API runs code; every page is served as a static file
+    "run_worker_first": ["/api/*"]
+  },
+
+  // Keep variables and secrets set in the Cloudflare dashboard
+  // (SMTP_USER, SMTP_PASS, CONTACT_TO...) when a new version deploys.
+  "keep_vars": true,
+
+  "observability": { "enabled": true }
+}

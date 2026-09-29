@@ -1,10 +1,11 @@
-// Cloudflare Pages Function: handles the contact form at POST /api/contact.
+// Contact form handler for POST /api/contact (called from worker/index.js).
 // Sends each enquiry through your Hostinger mailbox over SMTP.
 //
-// Add these in Cloudflare Pages > Settings > Variables and Secrets:
+// Add these in Cloudflare > Workers & Pages > techvibes-headless-astro >
+// Settings > Variables and Secrets:
 //   SMTP_USER   (secret)  the Hostinger mailbox that sends, e.g. website@techvibesit.com
 //   SMTP_PASS   (secret)  that mailbox's password
-//   CONTACT_TO            where enquiries arrive, e.g. hello@techvibesit.com
+//   CONTACT_TO  (text)    where enquiries arrive, e.g. hello@techvibesit.com
 // Optional (defaults shown):
 //   SMTP_HOST = smtp.hostinger.com
 //   SMTP_PORT = 465
