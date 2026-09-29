@@ -49,7 +49,7 @@ Node 22.12 or newer is required.
    - `NODE_VERSION` = `22`
    - `WP_URL` = `https://techvibesit.com`
    - `SITE_NOINDEX` = `true` (until cutover)
-   - Contact form: `RESEND_API_KEY` (secret), `CONTACT_FROM` (for example `TechVibes Website <website@techvibesit.com>`, on a domain verified in Resend), `CONTACT_TO` = `hello@techvibesit.com`
+   - Contact form: `SMTP_USER` and `SMTP_PASS` (secrets), `CONTACT_TO`. See Contact form below.
 5. Custom domains: keep `astro.techvibesit.com` attached to the project.
 
 If the build cannot reach WordPress on Cloudflare, it fails instead of
@@ -57,10 +57,22 @@ publishing a site with missing posts. Locally it only warns.
 
 ## Contact form
 
-`functions/api/contact.js` is a Cloudflare Pages Function that emails each
-enquiry through [Resend](https://resend.com) (free tier covers a small site).
-Until `RESEND_API_KEY` and `CONTACT_FROM` are set, the form shows a message
-asking visitors to email `hello@techvibesit.com`.
+`functions/api/contact.js` is a Cloudflare Pages Function that sends each
+enquiry through your Hostinger mailbox over SMTP (`smtp.hostinger.com`,
+port 465). Reply-To is set to the visitor, so hitting Reply answers them.
+
+Set in Cloudflare Pages > Settings > Variables and Secrets (Production), then redeploy:
+
+| Name | Value | Type |
+|---|---|---|
+| `SMTP_USER` | the sending mailbox, e.g. `website@techvibesit.com` | Secret |
+| `SMTP_PASS` | that mailbox's password | Secret |
+| `CONTACT_TO` | where enquiries arrive, e.g. `hello@techvibesit.com` | Text |
+| `SMTP_HOST` / `SMTP_PORT` | optional, default `smtp.hostinger.com` / `465` | Text |
+
+Until `SMTP_USER` and `SMTP_PASS` are set, the form asks visitors to email
+`hello@techvibesit.com`. Failed sends are logged in the deployment's
+Functions > Real-time logs as `[contact] SMTP send failed: ...`.
 
 ## Rebuild automatically when WordPress changes
 
