@@ -51,7 +51,7 @@ Cloudflare > Workers & Pages > techvibes-headless-astro > Settings:
    - **Build variables** (used while building): `NODE_VERSION` = `22`,
      `WP_URL` = `https://techvibesit.com`, `SITE_NOINDEX` = `true` (until cutover)
 2. **Variables and Secrets** (used by the running site, for the contact form):
-   `CONTACT_KEY` (secret). See Contact form below.
+   `RESEND_API_KEY` (secret), `CONTACT_TO`. See Contact form below.
    `keep_vars` in `wrangler.jsonc` stops deploys from wiping these.
 3. **Domains & Routes**: `new.techvibesit.com` (test).
 
@@ -64,30 +64,30 @@ to deliberately build without WordPress content.
 
 ## Contact form
 
-The form posts to `/api/contact` (`worker/contact.js`), which passes the
-enquiry to the **TechVibes Contact Endpoint** WordPress plugin
-(`wordpress/techvibes-contact-endpoint/`). WordPress emails it with its normal
-mail setup (your Hostinger mailbox) and saves a copy under **Enquiries** in
-wp-admin. Reply-To is the visitor, so hitting Reply answers them.
+The form posts to `/api/contact` (`worker/contact.js`), which emails each
+enquiry through [Resend](https://resend.com) (free up to 3,000 emails a month).
+Reply-To is the visitor, so hitting Reply answers them.
 
-(The Worker can't send through Hostinger's SMTP directly: `smtp.hostinger.com`
-is on Cloudflare's network, which Workers are not allowed to connect to.)
+(The Worker can't use Hostinger's SMTP directly: `smtp.hostinger.com` is on
+Cloudflare's network, which Workers are not allowed to open connections to.)
 
 Setup:
-1. Zip the `wordpress/techvibes-contact-endpoint` folder, then in WordPress go to
-   Plugins > Add New > Upload Plugin, install and activate it.
-2. WordPress > Settings > TechVibes Contact: check "Send enquiries to", click
-   **Send test email** and confirm it arrives. If not, install WP Mail SMTP with
-   your Hostinger mailbox (smtp.hostinger.com, port 465, SSL).
-3. Copy the key shown there into the Worker's **Settings > Variables and Secrets**
-   as `CONTACT_KEY` (type Secret).
-4. After moving WordPress to cms.techvibesit.com, add `WP_CONTACT_URL` =
-   `https://cms.techvibesit.com/wp-json/techvibes/v1/contact`.
+1. Resend > Domains > Add Domain: `techvibesit.com`. Add the DNS records it shows
+   (on the `send` subdomain and `resend._domainkey`) in Cloudflare DNS, or use
+   Resend's Cloudflare auto-configure. Hostinger email is not affected.
+2. Resend > API Keys > Create, permission **Sending access**.
+3. Worker > Settings > Variables and Secrets (runtime):
+
+| Name | Value | Type |
+|---|---|---|
+| `RESEND_API_KEY` | the key from step 2 | Secret |
+| `CONTACT_TO` | where enquiries arrive (default `hello@techvibesit.com`) | Text |
+| `CONTACT_FROM` | optional, default `TechVibes Website <hello@techvibesit.com>`; must be on the verified domain | Text |
 
 Troubleshooting:
-- `/api/contact?check=1` shows whether the Worker can reach the plugin and the key matches.
-- Submit the form from `/contact/?debug=1` to see the reason a send failed.
-- Enquiries are never lost: WordPress keeps each one under **Enquiries**, marked if the email failed.
+- `/api/contact?check=1` shows whether the handler is live and which settings it can see.
+- Submit the form from `/contact/?debug=1` to see why a send failed (Resend's own message).
+- Resend > Emails lists every email sent and whether it was delivered.
 - Logs: the Worker's **Observability** tab, look for `[contact]`.
 
 ## Rebuild automatically when WordPress changes
