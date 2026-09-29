@@ -3,6 +3,7 @@
 // served at the same URLs as on the live site: /post-slug/ and /page-slug/.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CTA from '../components/CTA.astro';
+import Comments from '../components/blog/Comments.astro';
 import {
   getPosts, getContentPages, getSeoHead, decode, featuredImage, postTerms, postAuthor, formatDate, localiseLinks,
 } from '../lib/wp';
@@ -60,6 +61,7 @@ const related = isPost ? (await getPosts()).filter((p) => p.id !== entry.id).sli
           {tags.map((t) => <a href={t.path}>#{t.name}</a>)}
         </div>
       )}
+      {isPost && <Comments postId={entry.id} open={entry.comment_status === 'open'} title={title} />}
     </div>
   </article>
 

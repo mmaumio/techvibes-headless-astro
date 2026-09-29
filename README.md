@@ -108,6 +108,20 @@ Troubleshooting:
 - Resend > Emails lists every email sent and whether it was delivered.
 - Logs: the Worker's **Observability** tab, look for `[contact]`.
 
+## Blog comments
+
+Posts show WordPress comments with a comment form in the site design. It needs
+the **TechVibes Headless Comments** plugin (`wordpress/techvibes-headless-comments/`)
+active on WordPress: zip that folder, then Plugins > Add New > Upload Plugin.
+
+- New comments go through WordPress's normal comment handling
+  (`wp_handle_comment_submission`), so Settings > Discussion, moderation,
+  Akismet, flood protection and notification emails all apply as before.
+- Comments load live from WordPress in the visitor's browser, so approved
+  comments appear without a rebuild.
+- Posts with comments closed show no form; closed posts with no comments show nothing.
+- If the plugin is missing, the comments section simply stays hidden.
+
 ## Rebuild automatically when WordPress changes
 
 1. Worker > Settings > Builds > Deploy Hooks > create a hook for `main`, copy the URL.

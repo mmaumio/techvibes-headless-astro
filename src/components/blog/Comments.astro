@@ -1,0 +1,340 @@
+---
+// Blog comments, stored and moderated in WordPress.
+// Needs the "TechVibes Headless Comments" plugin active on WordPress.
+// Comments load live from WordPress, so newly approved ones appear straight away.
+import { WP_URL } from '../../data/site';
+
+interface Props { postId: number; open: boolean; title: string }
+const { postId, open, title } = Astro.props;
+const api = `${WP_URL}/wp-json/techvibes/v1/comments`;
+---
+<section class="comments" id="comments" data-comments data-api={api} data-post={postId} data-open={open ? '1' : '0'} hidden>
+  <h2 class="h2 comments__title" data-count-title>Comments</h2>
+  <ol class="comments__list" data-list></ol>
+  <p class="comments__empty" data-empty hidden>No comments yet. Start the conversation.</p>
+
+  <div class="comment-form-wrap" data-form-home>
+    <form class="card comment-form" data-form novalidate>
+      <div class="comment-form__head">
+        <h3 class="h3 comment-form__title" data-form-title>Leave a comment</h3>
+        <button type="button" class="comment-form__cancel" data-cancel hidden>Cancel reply</button>
+      </div>
+      <p class="comment-form__note">Your email address will not be published. <span data-required-note>Required fields are marked <span class="req">*</span></span></p>
+      <div class="field">
+        <label for="c-content">Comment <span class="req">*</span></label>
+        <textarea id="c-content" name="content" rows="6" required maxlength="65525"></textarea>
+      </div>
+      <div class="comment-form__row">
+        <div class="field">
+          <label for="c-name">Name <span class="req" data-req>*</span></label>
+          <input id="c-name" name="author_name" autocomplete="name" maxlength="245" />
+        </div>
+        <div class="field">
+          <label for="c-email">Email <span class="req" data-req>*</span></label>
+          <input id="c-email" name="author_email" type="email" autocomplete="email" maxlength="100" />
+        </div>
+        <div class="field">
+          <label for="c-url">Website</label>
+          <input id="c-url" name="author_url" type="url" autocomplete="url" maxlength="200" placeholder="https://" />
+        </div>
+      </div>
+      <label class="comment-form__remember">
+        <input type="checkbox" name="remember" data-remember />
+        Save my name, email, and website in this browser for the next time I comment.
+      </label>
+      <!-- Honeypot: left empty by people, filled in by bots -->
+      <div class="sr-only" aria-hidden="true">
+        <label for="c-hp">Leave this empty</label>
+        <input id="c-hp" name="tv_hp" tabindex="-1" autocomplete="off" />
+      </div>
+      <input type="hidden" name="parent" value="0" data-parent />
+      <div class="comment-form__foot">
+        <button type="submit" class="btn btn--dark">Post Comment <span class="arrow" aria-hidden="true">→</span></button>
+        <p class="comment-form__status" role="status" aria-live="polite" data-status></p>
+      </div>
+    </form>
+  </div>
+  <p class="comments__closed" data-closed hidden>Comments are closed.</p>
+  <noscript><p class="comments__closed">Please enable JavaScript to read and post comments.</p></noscript>
+  <span hidden data-post-title>{title}</span>
+</section>
+
+<style>
+  .comments { max-width: 760px; margin-top: clamp(56px, 8vw, 88px); padding-top: 40px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 28px; }
+  .comments[hidden] { display: none; }
+  .comments__title { font-size: clamp(26px, 3vw, 34px); }
+  .comments__list, .comments :global(.comment__children) { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .comments :global(.comment__children) { margin-top: 16px; padding-left: clamp(16px, 4vw, 40px); border-left: 2px solid #E6EEEE; }
+  .comments :global(.comment) { display: flex; flex-direction: column; gap: 16px; }
+  .comments :global(.comment__box) { padding: 20px 22px; border: 1px solid var(--line-2); border-radius: 14px; background: #FFFFFF; }
+  .comments :global(.comment--new .comment__box) { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(27,156,133,.12); }
+  .comments :global(.comment__head) { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .comments :global(.comment__avatar) { width: 40px; height: 40px; border-radius: 50%; background: var(--soft); flex: none; object-fit: cover; }
+  .comments :global(.comment__author) { font-weight: 600; color: var(--ink); font-size: 15.5px; }
+  .comments :global(.comment__badge) { margin-left: 6px; padding: 2px 7px; border-radius: 5px; background: #E6F4F1; color: var(--teal-dark); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; }
+  .comments :global(.comment__date) { display: block; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+  .comments :global(.comment__body) { font-size: 16px; line-height: 1.65; color: var(--text); overflow-wrap: anywhere; }
+  .comments :global(.comment__body p) { margin: 0 0 .8em; }
+  .comments :global(.comment__body p:last-child) { margin-bottom: 0; }
+  .comments :global(.comment__reply) { margin-top: 10px; padding: 0; background: none; border: 0; cursor: pointer; font: 500 14px/1 var(--font-body); color: var(--teal-dark); }
+  .comments :global(.comment__reply:hover) { color: var(--blue); }
+  .comments__empty, .comments__closed { margin: 0; color: var(--muted); }
+
+  .comment-form { padding: clamp(22px, 3.5vw, 32px); display: flex; flex-direction: column; gap: 18px; }
+  .comment-form__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .comment-form__title { font-size: 22px; }
+  .comment-form__cancel { background: none; border: 0; cursor: pointer; font: 500 14px/1 var(--font-body); color: var(--muted); text-decoration: underline; }
+  .comment-form__note { margin: -8px 0 0; font-size: 14px; color: var(--muted); }
+  .comment-form__row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 16px; }
+  .comment-form__remember { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--text); line-height: 1.5; }
+  .comment-form__remember input { margin-top: 3px; accent-color: var(--teal); }
+  .comment-form__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+  .comment-form__status { margin: 0; font-size: 15px; color: var(--text); }
+  .comment-form__status.is-error { color: #B42318; }
+  .comment-form__status.is-ok { color: var(--teal-dark); }
+  .comments :global(.comment .comment-form-wrap) { margin-top: 4px; }
+</style>
+
+<script>
+  type C = { id: number; parent: number; author: string; url: string; date: string; content: string; avatar: string; byAuthor?: boolean };
+  type Data = { open: boolean; threaded: boolean; depth: number; requireNameEmail: boolean; mustLogIn: boolean; count: number; comments: C[] };
+
+  const root = document.querySelector<HTMLElement>('[data-comments]');
+  if (root) init(root);
+
+  function init(root: HTMLElement) {
+    const api = root.dataset.api!;
+    const postId = root.dataset.post!;
+    const q = <T extends Element = HTMLElement>(s: string) => root.querySelector<T>(s) as T;
+    const list = q('[data-list]');
+    const form = q<HTMLFormElement>('[data-form]');
+    const formHome = q('[data-form-home]');
+    const status = q('[data-status]');
+    const parentInput = q<HTMLInputElement>('[data-parent]');
+    const cancel = q('[data-cancel]');
+    const formTitle = q('[data-form-title]');
+    const countTitle = q('[data-count-title]');
+    const postTitle = q('[data-post-title]').textContent || '';
+    let settings: Data | null = null;
+    let count = 0;
+
+    const fmt = (iso: string) => {
+      const d = new Date(iso);
+      return `${d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })} at ${d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`;
+    };
+    const setStatus = (msg: string, kind: '' | 'ok' | 'error' = '') => {
+      status.textContent = msg;
+      status.className = 'comment-form__status' + (kind ? ` is-${kind}` : '');
+    };
+    const updateTitle = () => {
+      countTitle.textContent = count === 0 ? 'Comments' : `${count} ${count === 1 ? 'comment' : 'comments'} on “${postTitle}”`;
+      q('[data-empty]').hidden = count > 0;
+    };
+
+    function renderComment(c: C, level: number): HTMLLIElement {
+      const li = document.createElement('li');
+      li.className = 'comment';
+      li.id = `comment-${c.id}`;
+      li.dataset.level = String(level);
+      const box = document.createElement('article');
+      box.className = 'comment__box';
+
+      const head = document.createElement('header');
+      head.className = 'comment__head';
+      if (c.avatar) {
+        const img = document.createElement('img');
+        img.className = 'comment__avatar';
+        img.src = c.avatar; img.alt = ''; img.width = 40; img.height = 40; img.loading = 'lazy';
+        head.append(img);
+      }
+      const who = document.createElement('div');
+      const name = document.createElement(c.url ? 'a' : 'span') as HTMLElement;
+      name.className = 'comment__author';
+      name.textContent = c.author || 'Anonymous';
+      if (c.url && name instanceof HTMLAnchorElement) { name.href = c.url; name.rel = 'external nofollow ugc'; }
+      who.append(name);
+      if (c.byAuthor) {
+        const badge = document.createElement('span');
+        badge.className = 'comment__badge'; badge.textContent = 'Author';
+        who.append(badge);
+      }
+      const time = document.createElement('time');
+      time.className = 'comment__date'; time.dateTime = c.date; time.textContent = fmt(c.date);
+      who.append(time);
+      head.append(who);
+
+      const body = document.createElement('div');
+      body.className = 'comment__body';
+      body.innerHTML = c.content; // already filtered by WordPress (same HTML WordPress shows)
+
+      box.append(head, body);
+      if (settings?.open && settings.threaded && level < settings.depth) {
+        const reply = document.createElement('button');
+        reply.type = 'button'; reply.className = 'comment__reply'; reply.textContent = 'Reply';
+        reply.addEventListener('click', () => startReply(c, li));
+        box.append(reply);
+      }
+      li.append(box);
+      return li;
+    }
+
+    function childList(li: HTMLElement): HTMLOListElement {
+      let ol = li.querySelector<HTMLOListElement>(':scope > .comment__children');
+      if (!ol) {
+        ol = document.createElement('ol');
+        ol.className = 'comment__children';
+        li.append(ol);
+      }
+      return ol;
+    }
+
+    function render(comments: C[]) {
+      list.textContent = '';
+      const byId = new Map<number, HTMLLIElement>();
+      for (const c of comments) {
+        const parent = settings!.threaded ? byId.get(c.parent) : undefined;
+        const level = parent ? Number(parent.dataset.level) + 1 : 1;
+        const li = renderComment(c, level);
+        byId.set(c.id, li);
+        (parent ? childList(parent) : list).append(li);
+      }
+    }
+
+    function startReply(c: C, li: HTMLElement) {
+      parentInput.value = String(c.id);
+      formTitle.textContent = `Reply to ${c.author || 'Anonymous'}`;
+      cancel.hidden = false;
+      li.querySelector(':scope > .comment__box')!.after(formHome);
+      setStatus('');
+      form.querySelector<HTMLTextAreaElement>('textarea')!.focus();
+    }
+
+    function resetReply() {
+      parentInput.value = '0';
+      formTitle.textContent = 'Leave a comment';
+      cancel.hidden = true;
+      list.after(q('[data-empty]'));
+      q('[data-empty]').after(formHome);
+    }
+    cancel.addEventListener('click', resetReply);
+
+    // Remember name/email/website in this browser if asked (like WordPress's cookie checkbox).
+    const STORE = 'tv_comment_author';
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORE) || 'null');
+      if (saved) {
+        (form.elements.namedItem('author_name') as HTMLInputElement).value = saved.name || '';
+        (form.elements.namedItem('author_email') as HTMLInputElement).value = saved.email || '';
+        (form.elements.namedItem('author_url') as HTMLInputElement).value = saved.url || '';
+        q<HTMLInputElement>('[data-remember]').checked = true;
+      }
+    } catch { /* storage unavailable */ }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      const content = String(fd.get('content') || '').trim();
+      const name = String(fd.get('author_name') || '').trim();
+      const email = String(fd.get('author_email') || '').trim();
+      if (!content) return setStatus('Please type your comment.', 'error');
+      if (settings?.requireNameEmail && (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) {
+        return setStatus('Please fill in your name and a valid email address.', 'error');
+      }
+
+      try {
+        if (q<HTMLInputElement>('[data-remember]').checked) {
+          localStorage.setItem(STORE, JSON.stringify({ name, email, url: String(fd.get('author_url') || '').trim() }));
+        } else {
+          localStorage.removeItem(STORE);
+        }
+      } catch { /* storage unavailable */ }
+
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+      button.disabled = true;
+      setStatus('Posting…');
+      const body = new URLSearchParams({
+        post: postId,
+        parent: parentInput.value,
+        author_name: name,
+        author_email: email,
+        author_url: String(fd.get('author_url') || '').trim(),
+        content,
+        tv_hp: String(fd.get('tv_hp') || ''),
+      });
+      try {
+        const res = await fetch(api, { method: 'POST', body, headers: { Accept: 'application/json' } });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data?.message || 'Your comment could not be posted. Please try again.');
+
+        (form.elements.namedItem('content') as HTMLTextAreaElement).value = '';
+        const parentId = Number(parentInput.value);
+        if (data.status === 'approved' && data.comment) {
+          const parentLi = parentId ? document.getElementById(`comment-${parentId}`) : null;
+          const level = parentLi ? Number(parentLi.dataset.level) + 1 : 1;
+          const li = renderComment(data.comment, level);
+          li.classList.add('comment--new');
+          resetReply();
+          (parentLi ? childList(parentLi) : list).append(li);
+          count++; updateTitle();
+          li.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setStatus('Thanks, your comment is live.', 'ok');
+        } else {
+          resetReply();
+          setStatus('Thanks! Your comment is awaiting moderation and will appear once approved.', 'ok');
+        }
+      } catch (err) {
+        setStatus((err as Error).message || 'Your comment could not be posted. Please try again.', 'error');
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    // Load comments when the section is close to the screen.
+    let loaded = false;
+    const load = async () => {
+      if (loaded) return;
+      loaded = true;
+      try {
+        const res = await fetch(`${api}?post=${encodeURIComponent(postId)}`, { headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error(String(res.status));
+        settings = (await res.json()) as Data;
+      } catch {
+        // Plugin missing or WordPress unreachable: fall back to what the build knew.
+        if (root.dataset.open !== '1') return; // nothing useful to show
+        settings = { open: false, threaded: true, depth: 5, requireNameEmail: true, mustLogIn: false, count: 0, comments: [] };
+        root.hidden = false;
+        q('[data-closed]').textContent = 'Comments could not be loaded right now. Please try again later.';
+        q('[data-closed]').hidden = false;
+        formHome.hidden = true;
+        updateTitle();
+        q('[data-empty]').hidden = true;
+        return;
+      }
+      count = settings.comments.length;
+      if (!settings.open && count === 0) return; // closed with nothing to show: keep hidden
+      root.hidden = false;
+      render(settings.comments);
+      updateTitle();
+      q('[data-required-note]').hidden = !settings.requireNameEmail;
+      root.querySelectorAll<HTMLElement>('[data-req]').forEach((el) => (el.hidden = !settings!.requireNameEmail));
+      if (!settings.open || settings.mustLogIn) {
+        formHome.hidden = true;
+        q('[data-closed]').hidden = false;
+        if (settings.mustLogIn && settings.open) q('[data-closed]').textContent = 'Commenting is limited to registered users.';
+      }
+      // Jump to a comment linked as #comment-123
+      if (location.hash.startsWith('#comment')) document.querySelector(location.hash)?.scrollIntoView();
+    };
+
+    if (location.hash.startsWith('#comment') || !('IntersectionObserver' in window)) {
+      load();
+    } else {
+      // The section is hidden until loaded, so watch the article end instead.
+      const target = root.previousElementSibling || root.parentElement!;
+      const io = new IntersectionObserver((entries) => {
+        if (entries.some((en) => en.isIntersecting)) { io.disconnect(); load(); }
+      }, { rootMargin: '600px' });
+      io.observe(target);
+    }
+  }
+</script>
