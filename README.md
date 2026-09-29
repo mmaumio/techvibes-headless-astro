@@ -51,7 +51,7 @@ Cloudflare > Workers & Pages > techvibes-headless-astro > Settings:
    - **Build variables** (used while building): `NODE_VERSION` = `22`,
      `WP_URL` = `https://techvibesit.com`, `SITE_NOINDEX` = `true` (until cutover)
 2. **Variables and Secrets** (used by the running site, for the contact form):
-   `SMTP_USER` and `SMTP_PASS` (secrets), `CONTACT_TO`. See Contact form below.
+   `CONTACT_KEY` (secret). See Contact form below.
    `keep_vars` in `wrangler.jsonc` stops deploys from wiping these.
 3. **Domains & Routes**: `new.techvibesit.com` (test).
 
@@ -64,27 +64,31 @@ to deliberately build without WordPress content.
 
 ## Contact form
 
-`worker/contact.js` handles `POST /api/contact` and sends each enquiry through
-your Hostinger mailbox over SMTP (`smtp.hostinger.com`, port 465). Reply-To is
-set to the visitor, so hitting Reply answers them.
+The form posts to `/api/contact` (`worker/contact.js`), which passes the
+enquiry to the **TechVibes Contact Endpoint** WordPress plugin
+(`wordpress/techvibes-contact-endpoint/`). WordPress emails it with its normal
+mail setup (your Hostinger mailbox) and saves a copy under **Enquiries** in
+wp-admin. Reply-To is the visitor, so hitting Reply answers them.
 
-Set in the Worker's **Settings > Variables and Secrets**:
+(The Worker can't send through Hostinger's SMTP directly: `smtp.hostinger.com`
+is on Cloudflare's network, which Workers are not allowed to connect to.)
 
-| Name | Value | Type |
-|---|---|---|
-| `SMTP_USER` | the sending mailbox, e.g. `website@techvibesit.com` | Secret |
-| `SMTP_PASS` | that mailbox's password | Secret |
-| `CONTACT_TO` | where enquiries arrive, e.g. `hello@techvibesit.com` | Text |
-| `SMTP_HOST` / `SMTP_PORT` | optional, default `smtp.hostinger.com` / `465` | Text |
+Setup:
+1. Zip the `wordpress/techvibes-contact-endpoint` folder, then in WordPress go to
+   Plugins > Add New > Upload Plugin, install and activate it.
+2. WordPress > Settings > TechVibes Contact: check "Send enquiries to", click
+   **Send test email** and confirm it arrives. If not, install WP Mail SMTP with
+   your Hostinger mailbox (smtp.hostinger.com, port 465, SSL).
+3. Copy the key shown there into the Worker's **Settings > Variables and Secrets**
+   as `CONTACT_KEY` (type Secret).
+4. After moving WordPress to cms.techvibesit.com, add `WP_CONTACT_URL` =
+   `https://cms.techvibesit.com/wp-json/techvibes/v1/contact`.
 
 Troubleshooting:
-- `/api/contact?check=1` shows whether the handler is live and which settings it
-  can see (never the password).
+- `/api/contact?check=1` shows whether the Worker can reach the plugin and the key matches.
 - Submit the form from `/contact/?debug=1` to see the reason a send failed.
+- Enquiries are never lost: WordPress keeps each one under **Enquiries**, marked if the email failed.
 - Logs: the Worker's **Observability** tab, look for `[contact]`.
-
-Local test: put the same variables in a `.dev.vars` file (never committed), run
-`npm run build`, then `npx wrangler dev`.
 
 ## Rebuild automatically when WordPress changes
 

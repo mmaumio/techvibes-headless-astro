@@ -1,19 +1,19 @@
 // Contact form handler for POST /api/contact (called from worker/index.js).
-// Sends each enquiry through your Hostinger mailbox over SMTP.
 //
-// Add these in Cloudflare > Workers & Pages > techvibes-headless-astro >
-// Settings > Variables and Secrets:
-//   SMTP_USER   (secret)  the Hostinger mailbox that sends, e.g. website@techvibesit.com
-//   SMTP_PASS   (secret)  that mailbox's password
-//   CONTACT_TO  (text)    where enquiries arrive, e.g. hello@techvibesit.com
-// Optional (defaults shown):
-//   SMTP_HOST = smtp.hostinger.com
-//   SMTP_PORT = 465
+// Enquiries are passed to the "TechVibes Contact Endpoint" plugin on the
+// WordPress site, which emails them with WordPress's mail setup (your
+// Hostinger mailbox) and keeps a copy under Enquiries in wp-admin.
+// (Workers can't talk to Hostinger's SMTP server directly: it sits on
+// Cloudflare's own network, which Workers aren't allowed to connect to.)
+//
+// Cloudflare > Workers & Pages > techvibes-headless-astro > Settings >
+// Variables and Secrets:
+//   CONTACT_KEY     (secret)  the key shown in WordPress > Settings > TechVibes Contact
+//   WP_CONTACT_URL  (text)    optional, default https://techvibesit.com/wp-json/techvibes/v1/contact
+//                             (change it when WordPress moves to cms.techvibesit.com)
 
-import { WorkerMailer } from 'worker-mailer';
-
-const esc = (s = '') =>
-  String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const DEFAULT_ENDPOINT = 'https://techvibesit.com/wp-json/techvibes/v1/contact';
+const endpoint = (env) => env.WP_CONTACT_URL || DEFAULT_ENDPOINT;
 
 // Strip line breaks so nothing can be injected into email headers.
 const oneLine = (s = '') => String(s).replace(/[\r\n]+/g, ' ').trim();
@@ -27,6 +27,32 @@ function reply(request, status, body) {
   const url = new URL('/contact/', request.url);
   url.searchParams.set(status < 300 ? 'sent' : 'error', '1');
   return Response.redirect(url.toString(), 303);
+}
+
+/** Call the WordPress plugin. Returns { res, data } or throws on network errors. */
+async function callWordPress(env, init) {
+  const res = await fetch(endpoint(env), {
+    ...init,
+    headers: {
+      Accept: 'application/json',
+      'User-Agent': 'Mozilla/5.0 (compatible; TechVibesWebsite/1.0; +https://techvibesit.com)',
+      'X-TechVibes-Key': env.CONTACT_KEY || '',
+      ...(init.headers || {}),
+    },
+    signal: AbortSignal.timeout(20000),
+  });
+  const type = res.headers.get('content-type') || '';
+  const text = await res.text();
+  let data = null;
+  if (type.includes('json')) {
+    try { data = JSON.parse(text); } catch { /* not JSON after all */ }
+  }
+  return { res, data, text };
+}
+
+function describe({ res, data, text }) {
+  if (data && data.code) return `${res.status} ${data.code}: ${data.message || ''}`.trim();
+  return `HTTP ${res.status}, not a WordPress response: ${text.replace(/\s+/g, ' ').slice(0, 120)}`;
 }
 
 export async function onRequestPost({ request, env }) {
@@ -49,6 +75,7 @@ export async function onRequestPost({ request, env }) {
     service: oneLine(field('service')),
     budget: oneLine(field('budget')),
     requirements: field('requirements'),
+    page: request.headers.get('Referer') || '',
   };
 
   if (!data.firstName || !data.lastName || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
@@ -58,92 +85,76 @@ export async function onRequestPost({ request, env }) {
     return reply(request, 422, { error: 'Message too long.' });
   }
 
-  if (!env.SMTP_USER || !env.SMTP_PASS) {
-    const missing = ['SMTP_USER', 'SMTP_PASS'].filter((k) => !env[k]).join(', ');
-    console.error(`[contact] Missing variables: ${missing}`);
-    return reply(request, 503, { error: 'Contact form is not configured yet.', reason: 'not-configured', detail: `missing ${missing}` });
+  if (!env.CONTACT_KEY) {
+    console.error('[contact] CONTACT_KEY is not set');
+    return reply(request, 503, { error: 'Contact form is not configured yet.', reason: 'not-configured', detail: 'missing CONTACT_KEY' });
   }
 
-  const rows = [
-    ['Name', `${data.firstName} ${data.lastName}`],
-    ['Email', data.email],
-    ['Phone', data.phone],
-    ['Service', data.service],
-    ['Budget', data.budget],
-  ].filter(([, v]) => v);
-
-  const html = `
-    <h2 style="font-family:sans-serif;color:#0F1E2A">New enquiry from techvibesit.com</h2>
-    <table style="font-family:sans-serif;font-size:15px;border-collapse:collapse">
-      ${rows.map(([k, v]) => `<tr><td style="padding:6px 16px 6px 0;color:#4A5B66">${k}</td><td style="padding:6px 0">${esc(v)}</td></tr>`).join('')}
-    </table>
-    ${data.requirements ? `<h3 style="font-family:sans-serif;color:#0F1E2A">Requirements</h3><p style="font-family:sans-serif;font-size:15px;white-space:pre-wrap">${esc(data.requirements)}</p>` : ''}`;
-
-  const text = [
-    'New enquiry from techvibesit.com',
-    '',
-    ...rows.map(([k, v]) => `${k}: ${v}`),
-    ...(data.requirements ? ['', 'Requirements:', data.requirements] : []),
-  ].join('\n');
-
-  let mailer;
-  let stage = 'login';
+  let result;
   try {
-    mailer = await WorkerMailer.connect({
-      host: env.SMTP_HOST || 'smtp.hostinger.com',
-      port: Number(env.SMTP_PORT || 465),
-      secure: Number(env.SMTP_PORT || 465) === 465,
-      credentials: { username: env.SMTP_USER, password: env.SMTP_PASS },
-      authType: ['plain', 'login'],
-      socketTimeoutMs: 15000,
-      responseTimeoutMs: 15000,
-    });
-
-    stage = 'send';
-    await mailer.send({
-      // Hostinger only accepts mail "from" the mailbox that logged in.
-      from: { name: 'TechVibes Website', email: env.SMTP_USER },
-      to: env.CONTACT_TO || 'hello@techvibesit.com',
-      reply: { name: `${data.firstName} ${data.lastName}`, email: data.email },
-      subject: `New enquiry: ${data.firstName} ${data.lastName}${data.service ? ` (${data.service})` : ''}`,
-      text,
-      html,
+    result = await callWordPress(env, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Visitor-IP': request.headers.get('CF-Connecting-IP') || '',
+      },
+      body: JSON.stringify(data),
     });
   } catch (err) {
     const message = String(err && err.message ? err.message : err);
-    console.error('[contact] SMTP send failed:', message);
-    // Stage "login" covers connecting to the server and signing in. A wrong
-    // password can surface as a timeout because some servers hang up on it.
-    const reason = /535|authentication|credential/i.test(message)
-      ? 'smtp-login-rejected'
-      : stage === 'login'
-        ? 'smtp-connect-or-login-failed'
-        : 'smtp-send-failed';
-    return reply(request, 502, { error: 'Email could not be sent.', reason, detail: message.replace(/\s+/g, ' ').slice(0, 160) });
-  } finally {
-    try { await mailer?.close(); } catch { /* connection already closed */ }
+    console.error('[contact] WordPress unreachable:', message);
+    return reply(request, 502, { error: 'Email could not be sent.', reason: 'wordpress-unreachable', detail: message.slice(0, 160) });
   }
 
-  return reply(request, 200, { ok: true });
+  const { res, data: body } = result;
+  if (res.ok && body && body.ok) return reply(request, 200, { ok: true });
+
+  const detail = describe(result);
+  console.error('[contact] WordPress rejected the enquiry:', detail);
+  const reason =
+    res.status === 401 ? 'key-rejected'
+    : res.status === 404 && body?.code === 'rest_no_route' ? 'plugin-not-active'
+    : res.status === 422 ? 'invalid'
+    : res.status === 429 ? 'rate-limited'
+    : body?.code === 'tvce_mail_failed' ? 'wordpress-mail-failed'
+    : 'wordpress-error';
+  const status = res.status === 422 || res.status === 429 ? res.status : 502;
+  return reply(request, status, {
+    error: body?.message || 'Email could not be sent.',
+    reason,
+    detail: detail.slice(0, 200),
+  });
 }
 
-// GET /api/contact?check=1 shows whether the form handler is deployed and
-// which settings it can see. It never reveals the password or the mailbox.
+// GET /api/contact?check=1 confirms the form handler is live and can reach
+// the WordPress plugin with the right key. It never reveals the key.
 export async function onRequestGet({ request, env }) {
   if (!new URL(request.url).searchParams.has('check')) {
     return new Response('Method Not Allowed', { status: 405, headers: { Allow: 'POST' } });
   }
-  const set = (v) => (v ? 'set' : 'MISSING');
-  const domain = env.SMTP_USER && env.SMTP_USER.includes('@') ? env.SMTP_USER.split('@')[1] : null;
-  const body = {
+  const report = {
     handler: 'deployed',
-    SMTP_USER: env.SMTP_USER ? `set (a mailbox at ${domain ?? 'unknown domain, should be a full email address'})` : 'MISSING',
-    SMTP_PASS: set(env.SMTP_PASS),
-    CONTACT_TO: env.CONTACT_TO ? 'set' : 'not set (defaults to hello@techvibesit.com)',
-    SMTP_HOST: env.SMTP_HOST || 'smtp.hostinger.com (default)',
-    SMTP_PORT: env.SMTP_PORT || '465 (default)',
+    CONTACT_KEY: env.CONTACT_KEY ? 'set' : 'MISSING',
+    WP_CONTACT_URL: env.WP_CONTACT_URL || `${DEFAULT_ENDPOINT} (default)`,
+    wordpress: 'not checked',
   };
-  return new Response(JSON.stringify(body, null, 2), {
+  if (env.CONTACT_KEY) {
+    try {
+      const result = await callWordPress(env, { method: 'GET' });
+      if (result.res.ok && result.data?.ok) {
+        report.wordpress = `connected, plugin ${result.data.plugin}, enquiries go to ${result.data.recipient}`;
+      } else if (result.res.status === 401) {
+        report.wordpress = 'plugin found, but the key does not match. Copy it again from WordPress > Settings > TechVibes Contact.';
+      } else if (result.data?.code === 'rest_no_route') {
+        report.wordpress = 'plugin not installed or not active on WordPress';
+      } else {
+        report.wordpress = describe(result);
+      }
+    } catch (err) {
+      report.wordpress = `unreachable: ${String(err && err.message ? err.message : err).slice(0, 160)}`;
+    }
+  }
+  return new Response(JSON.stringify(report, null, 2), {
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
 }
