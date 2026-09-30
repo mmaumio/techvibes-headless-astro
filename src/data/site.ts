@@ -15,6 +15,7 @@ export const company = {
   linkedin: 'https://www.linkedin.com/company/techvibesit',
   facebook: 'https://www.facebook.com/techvibesit/',
   github: 'https://github.com/TechVibes-IT-Ltd',
+  trustpilot: 'https://www.trustpilot.com/review/techvibesit.com',
   // Meetings are booked through Calendly, embedded on /schedule-a-meeting/.
   scheduleUrl: '/schedule-a-meeting/',
   calendlyUrl: 'https://calendly.com/muntasiraumio/30min',
