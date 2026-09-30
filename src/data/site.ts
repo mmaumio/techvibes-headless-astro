@@ -14,6 +14,7 @@ export const company = {
   address: 'Innovation Centre and Business Base, 110 Great Marlings, Butterfield, Luton, LU2 8DL, United Kingdom',
   linkedin: 'https://www.linkedin.com/company/techvibesit',
   facebook: 'https://www.facebook.com/techvibesit/',
+  github: 'https://github.com/TechVibes-IT-Ltd',
   // Meetings are booked through Calendly, embedded on /schedule-a-meeting/.
   scheduleUrl: '/schedule-a-meeting/',
   calendlyUrl: 'https://calendly.com/muntasiraumio/30min',
