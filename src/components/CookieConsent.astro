@@ -1,0 +1,123 @@
+---
+/**
+ * Cookie consent (UK GDPR / PECR) using vanilla-cookieconsent (MIT, bundled, no external service).
+ *
+ * Categories:
+ *   necessary   always on: the consent cookie itself, and "remember me" for comments (only when ticked)
+ *   functional  third-party embeds that set their own cookies: Calendly on /schedule-a-meeting/
+ *
+ * Anything that sets non-essential cookies must wait for consent. In a script, check
+ *   import { acceptedCategory } from 'vanilla-cookieconsent';  acceptedCategory('functional')
+ * and listen for the 'cc:onConsent' / 'cc:onChange' window events.
+ * Any element with data-cc="show-preferencesModal" opens the settings (see the footer).
+ */
+import { legal } from '../data/site';
+const cookiePolicy = legal.find((l) => /cookie/i.test(l.label))?.href ?? '/cookie-policy-uk/';
+const privacyPolicy = legal.find((l) => /privacy/i.test(l.label))?.href ?? '/privacy-policy/';
+---
+<div data-cookie-config data-cookie-policy={cookiePolicy} data-privacy-policy={privacyPolicy} hidden></div>
+
+<script>
+  import 'vanilla-cookieconsent/dist/cookieconsent.css';
+  import * as CookieConsent from 'vanilla-cookieconsent';
+
+  const cfg = document.querySelector<HTMLElement>('[data-cookie-config]')!.dataset;
+  const policyLink = `<a href="${cfg.cookiePolicy}">Cookie Policy</a>`;
+
+  CookieConsent.run({
+    // Bump this number when categories change, so everyone is asked again.
+    revision: 1,
+    cookie: { name: 'tv_consent', expiresAfterDays: 182, sameSite: 'Lax' },
+    guiOptions: {
+      consentModal: { layout: 'box', position: 'bottom left', equalWeightButtons: true, flipButtons: false },
+      preferencesModal: { layout: 'box', equalWeightButtons: true, flipButtons: false },
+    },
+    categories: {
+      necessary: { enabled: true, readOnly: true },
+      functional: {},
+    },
+    language: {
+      default: 'en',
+      translations: {
+        en: {
+          consentModal: {
+            title: 'Cookies on this site',
+            description:
+              `We use essential cookies to make this site work. With your permission we also load our booking calendar (Calendly), which sets its own cookies. Read our ${policyLink}.`,
+            acceptAllBtn: 'Accept all',
+            acceptNecessaryBtn: 'Reject non-essential',
+            showPreferencesBtn: 'Manage preferences',
+          },
+          preferencesModal: {
+            title: 'Cookie preferences',
+            acceptAllBtn: 'Accept all',
+            acceptNecessaryBtn: 'Reject non-essential',
+            savePreferencesBtn: 'Save preferences',
+            closeIconLabel: 'Close',
+            sections: [
+              {
+                description:
+                  'Choose which cookies you allow. You can change this at any time from the "Cookie settings" link at the bottom of every page.',
+              },
+              {
+                title: 'Strictly necessary',
+                description:
+                  'Needed for the site to work, such as remembering these cookie choices. If you tick "Save my name" when commenting, your details are kept in your browser only. These cannot be switched off.',
+                linkedCategory: 'necessary',
+              },
+              {
+                title: 'Booking calendar (Calendly)',
+                description:
+                  'Lets us show the Calendly booking calendar on the Schedule a Meeting page. Calendly sets its own cookies to run the calendar and remember your time zone. Without this you can still book through a link that opens Calendly directly.',
+                linkedCategory: 'functional',
+                cookieTable: {
+                  headers: { name: 'Provider', domain: 'Domain', desc: 'Purpose' },
+                  body: [
+                    { name: 'Calendly', domain: 'calendly.com', desc: 'Runs the booking calendar and remembers your session and time zone.' },
+                  ],
+                },
+              },
+              {
+                title: 'More information',
+                description: `See our ${policyLink} and <a href="${cfg.privacyPolicy}">Privacy Policy</a>, or email <a href="mailto:hello@techvibesit.com">hello@techvibesit.com</a>.`,
+              },
+            ],
+          },
+        },
+      },
+    },
+  });
+</script>
+
+<style is:global>
+  /* Match the TechVibes look. */
+  #cc-main {
+    --cc-font-family: var(--font-body);
+    --cc-modal-border-radius: 16px;
+    --cc-btn-border-radius: 12px;
+    --cc-bg: #FFFFFF;
+    --cc-primary-color: var(--ink);
+    --cc-secondary-color: var(--text);
+    --cc-btn-primary-bg: var(--navy);
+    --cc-btn-primary-color: #FFFFFF;
+    --cc-btn-primary-border-color: var(--navy);
+    --cc-btn-primary-hover-bg: var(--teal-dark);
+    --cc-btn-primary-hover-border-color: var(--teal-dark);
+    --cc-btn-secondary-bg: var(--soft);
+    --cc-btn-secondary-color: var(--ink);
+    --cc-btn-secondary-border-color: var(--line);
+    --cc-btn-secondary-hover-bg: #E9F0F0;
+    --cc-btn-secondary-hover-border-color: var(--line-2);
+    --cc-separator-border-color: var(--line);
+    --cc-toggle-on-bg: var(--teal);
+    --cc-toggle-readonly-bg: #C9D4D6;
+    --cc-cookie-category-block-bg: var(--soft);
+    --cc-cookie-category-block-border: var(--line);
+    --cc-cookie-category-block-hover-bg: #EEF3F3;
+    --cc-cookie-category-block-hover-border: var(--line-2);
+    --cc-cookie-category-expanded-block-bg: #FFFFFF;
+    --cc-link-color: var(--teal-dark);
+    --cc-overlay-bg: rgba(12, 26, 36, 0.55);
+  }
+  #cc-main .cm__title, #cc-main .pm__title { font-family: var(--font-display); letter-spacing: -0.02em; }
+</style>
