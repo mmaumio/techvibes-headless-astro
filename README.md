@@ -101,6 +101,25 @@ Setup:
 | `RESEND_API_KEY` | the key from step 2 | Secret |
 | `CONTACT_TO` | where enquiries arrive (default `hello@techvibesit.com`) | Text |
 | `CONTACT_FROM` | optional, default `TechVibes Website <hello@techvibesit.com>`; must be on the verified domain | Text |
+| `TURNSTILE_SECRET_KEY` | Turnstile secret key, see Spam protection below | Secret |
+
+### Spam protection (Cloudflare Turnstile)
+
+The form uses [Turnstile](https://developers.cloudflare.com/turnstile/), Cloudflare's free CAPTCHA.
+It is invisible for most visitors and only shows a checkbox when Cloudflare is unsure.
+It sets no tracking cookies, so it needs no cookie-banner category. A honeypot field also stays in place.
+
+Setup (do it in this order, so the form never rejects real visitors):
+1. Cloudflare > **Turnstile** > Add widget. Name `TechVibes contact form`, hostnames `techvibesit.com`
+   (add `localhost` too for local testing), mode **Managed**. Copy the **Site key** and **Secret key**.
+2. Worker > Settings > **Build** variables: `PUBLIC_TURNSTILE_SITE_KEY` = the site key. Redeploy
+   and check the contact page (the check runs once the form is on screen).
+3. Worker > Settings > **Variables and Secrets** (runtime): `TURNSTILE_SECRET_KEY` = the secret key, type **Secret**.
+   From now on every submission must pass the check. `/api/contact?check=1` shows `spam check on`.
+
+To switch it off, delete `TURNSTILE_SECRET_KEY` (stops checking) and `PUBLIC_TURNSTILE_SITE_KEY` (hides the widget).
+For local testing, Cloudflare's test keys always pass: site key `1x00000000000000000000AA`,
+secret `1x0000000000000000000000000000000AA`.
 
 Troubleshooting:
 - `/api/contact?check=1` shows whether the handler is live and which settings it can see.

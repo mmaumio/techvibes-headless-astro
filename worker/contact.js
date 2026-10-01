@@ -7,9 +7,35 @@
 //   CONTACT_TO      (text)    where enquiries arrive, default hello@techvibesit.com
 //   CONTACT_FROM    (text)    optional sender, default "TechVibes Website <hello@techvibesit.com>".
 //                             Must be on a domain verified in Resend.
+//   TURNSTILE_SECRET_KEY (secret) Cloudflare Turnstile secret key. When set, every
+//                             submission must carry a valid Turnstile token.
 
 const DEFAULT_TO = 'hello@techvibesit.com';
 const DEFAULT_FROM = 'TechVibes Website <hello@techvibesit.com>';
+
+const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+
+// Ask Cloudflare whether the Turnstile token from the form is genuine.
+async function verifyTurnstile(token, request, env) {
+  if (!token) return { ok: false, detail: 'missing token' };
+  const body = new FormData();
+  body.set('secret', env.TURNSTILE_SECRET_KEY);
+  body.set('response', token);
+  const ip = request.headers.get('CF-Connecting-IP');
+  if (ip) body.set('remoteip', ip);
+  try {
+    const res = await fetch(env.TURNSTILE_VERIFY_URL || TURNSTILE_VERIFY_URL, {
+      method: 'POST',
+      body,
+      signal: AbortSignal.timeout(10000),
+    });
+    const out = await res.json();
+    if (out.success) return { ok: true };
+    return { ok: false, detail: (out['error-codes'] || []).join(', ') || `HTTP ${res.status}` };
+  } catch (err) {
+    return { ok: false, detail: `verify unreachable: ${String(err && err.message ? err.message : err).slice(0, 120)}` };
+  }
+}
 
 const esc = (s = '') =>
   String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -49,6 +75,15 @@ export async function onRequestPost({ request, env }) {
     budget: oneLine(field('budget')),
     requirements: field('requirements'),
   };
+
+  // Spam check (Cloudflare Turnstile), on when TURNSTILE_SECRET_KEY is set.
+  if (env.TURNSTILE_SECRET_KEY) {
+    const check = await verifyTurnstile((form.get('cf-turnstile-response') || '').toString(), request, env);
+    if (!check.ok) {
+      console.warn('[contact] Turnstile check failed:', check.detail);
+      return reply(request, 403, { error: 'Security check failed.', reason: 'captcha-failed', detail: check.detail });
+    }
+  }
 
   if (!data.firstName || !data.lastName || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
     return reply(request, 422, { error: 'Please fill in your name and a valid email address.' });
@@ -132,6 +167,7 @@ export async function onRequestGet({ request, env }) {
     RESEND_API_KEY: env.RESEND_API_KEY ? 'set' : 'MISSING',
     CONTACT_TO: env.CONTACT_TO || `${DEFAULT_TO} (default)`,
     CONTACT_FROM: env.CONTACT_FROM || `${DEFAULT_FROM} (default)`,
+    TURNSTILE_SECRET_KEY: env.TURNSTILE_SECRET_KEY ? 'set (spam check on)' : 'not set (spam check off)',
   };
   return new Response(JSON.stringify(report, null, 2), {
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },

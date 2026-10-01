@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
-import { company } from '../data/site';
+import { company, TURNSTILE_SITE_KEY } from '../data/site';
 
 const serviceOptions = [
   'WordPress Development', 'Shopify Development', 'Mobile App Development',
@@ -75,6 +75,13 @@ const faqSchema = {
             <label for="website">Website</label>
             <input id="website" name="website" tabindex="-1" autocomplete="off" />
           </div>
+          {TURNSTILE_SITE_KEY && (
+            <div
+              class="contact-form__captcha"
+              data-turnstile
+              data-sitekey={TURNSTILE_SITE_KEY}
+            ></div>
+          )}
           <div class="contact-form__footer">
             <button type="submit" class="btn btn--dark">Submit <span class="arrow" aria-hidden="true">→</span></button>
             <p class="contact-form__status" role="status" aria-live="polite" data-form-status></p>
@@ -130,6 +137,8 @@ const faqSchema = {
   .contact-form { display: flex; flex-direction: column; gap: 20px; }
   .contact-form__row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 20px; }
   .contact-form__footer { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+  .contact-form__captcha:empty { display: none; }
+  .contact-form__captcha { min-height: 0; }
   .contact-form__status { margin: 0; font-size: 15px; color: var(--text); }
   .contact-form__status.is-error { color: #B42318; }
   .contact-form__status.is-ok { color: var(--teal-dark); }
@@ -148,6 +157,16 @@ const faqSchema = {
 </style>
 
 <script>
+  declare global {
+    interface Window {
+      turnstile?: {
+        render: (el: Element, opts: Record<string, unknown>) => string;
+        getResponse: (id?: string) => string | undefined;
+        reset: (id?: string) => void;
+      };
+    }
+  }
+
   const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
   const status = document.querySelector<HTMLElement>('[data-form-status]');
   const setStatus = (msg: string, kind: 'ok' | 'error' | '' = '') => {
@@ -160,6 +179,64 @@ const faqSchema = {
   if (params.has('sent')) setStatus("Thank you. Your message has been sent and we'll be in touch shortly.", 'ok');
   if (params.has('error')) setStatus('Sorry, your message could not be sent. Please email hello@techvibesit.com instead.', 'error');
 
+  // Cloudflare Turnstile spam check. Usually invisible; it only shows a checkbox
+  // when Cloudflare isn't sure the visitor is human.
+  const captchaBox = document.querySelector<HTMLElement>('[data-turnstile]');
+  let widgetId: string | undefined;
+  let captchaError = false;
+  let captchaLoading: Promise<void> | null = null;
+
+  function loadCaptcha(): Promise<void> {
+    if (!captchaBox) return Promise.resolve();
+    captchaLoading ??= new Promise<void>((resolve) => {
+      const render = () => {
+        widgetId = window.turnstile!.render(captchaBox, {
+          sitekey: captchaBox.dataset.sitekey,
+          appearance: 'interaction-only',
+          action: 'contact',
+          'error-callback': () => { captchaError = true; },
+          'callback': () => { captchaError = false; },
+        });
+        resolve();
+      };
+      if (window.turnstile) return render();
+      (window as unknown as Record<string, () => void>).tvTurnstileReady = render;
+      const s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=tvTurnstileReady';
+      s.async = true;
+      s.onerror = () => { captchaError = true; resolve(); };
+      document.head.appendChild(s);
+    });
+    return captchaLoading;
+  }
+
+  // Start the check as soon as the visitor shows interest in the form.
+  if (captchaBox && form) {
+    const start = () => loadCaptcha();
+    form.addEventListener('focusin', start, { once: true });
+    form.addEventListener('pointerenter', start, { once: true });
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        if (entries.some((en) => en.isIntersecting)) { io.disconnect(); start(); }
+      });
+      io.observe(form);
+    }
+  }
+
+  // Wait (up to 30s) for the check to pass; the visitor may need to tick the box.
+  async function captchaToken(): Promise<string> {
+    if (!captchaBox) return '';
+    await loadCaptcha();
+    const started = Date.now();
+    while (Date.now() - started < 30000) {
+      const token = window.turnstile?.getResponse(widgetId);
+      if (token) return token;
+      if (captchaError || !window.turnstile) break;
+      await new Promise((r) => setTimeout(r, 250));
+    }
+    return '';
+  }
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!form.checkValidity()) {
@@ -168,25 +245,46 @@ const faqSchema = {
     }
     const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
     button.disabled = true;
-    setStatus('Sending…');
+    setStatus(captchaBox ? 'Checking you’re not a robot…' : 'Sending…');
     try {
+      const body = new FormData(form);
+      if (captchaBox) {
+        const token = await captchaToken();
+        if (!token) {
+          throw Object.assign(new Error('captcha-not-completed'), {
+            friendly: 'Please complete the security check above, then press Submit again.',
+          });
+        }
+        body.set('cf-turnstile-response', token);
+        setStatus('Sending…');
+      }
       const res = await fetch(form.action, {
         method: 'POST',
-        body: new FormData(form),
+        body,
         headers: { Accept: 'application/json' },
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error(data.reason ? `${data.reason}${data.detail ? `: ${data.detail}` : ''}` : `HTTP ${res.status} (no response from the form handler)`);
+        const error = new Error(data.reason ? `${data.reason}${data.detail ? `: ${data.detail}` : ''}` : `HTTP ${res.status} (no response from the form handler)`);
+        if (data.reason === 'captcha-failed') {
+          Object.assign(error, { friendly: 'The security check didn’t go through. Please press Submit again.' });
+        }
+        throw error;
       }
       form.reset();
       setStatus("Thank you. Your message has been sent and we'll be in touch shortly.", 'ok');
     } catch (err) {
       // Add ?debug=1 to the page URL to see why a message failed.
       const why = params.has('debug') ? ` [${(err as Error).message}]` : '';
-      setStatus(`Sorry, your message could not be sent. Please email hello@techvibesit.com instead.${why}`, 'error');
+      const friendly = (err as { friendly?: string }).friendly;
+      setStatus(`${friendly ?? 'Sorry, your message could not be sent. Please email hello@techvibesit.com instead.'}${why}`, 'error');
     } finally {
       button.disabled = false;
+      // Each check can only be used once, so get a fresh one for the next attempt.
+      if (captchaBox && window.turnstile && widgetId !== undefined) {
+        captchaError = false;
+        window.turnstile.reset(widgetId);
+      }
     }
   });
 </script>

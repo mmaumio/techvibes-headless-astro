@@ -25,6 +25,10 @@ export const company = {
 // Set SITE_NOINDEX=false in Cloudflare Pages when this becomes the live site.
 export const NOINDEX = (env('SITE_NOINDEX') ?? 'true') !== 'false';
 
+// Cloudflare Turnstile site key (public) for the contact form's spam check.
+// Leave empty to hide the check. The matching secret key is a Worker secret, see README.
+export const TURNSTILE_SITE_KEY = (env('PUBLIC_TURNSTILE_SITE_KEY') || '').trim();
+
 export const services = [
   {
     slug: 'ai-automation',
