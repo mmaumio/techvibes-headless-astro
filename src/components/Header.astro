@@ -8,7 +8,7 @@ const mainNav = nav;
 ---
 <header class="site-header" data-header>
   <div class="container site-header__bar">
-    <Logo />
+    <Logo large />
 
     <nav aria-label="Primary" class="nav-desktop">
       {mainNav.map((item) =>
@@ -31,7 +31,7 @@ const mainNav = nav;
     </nav>
 
     <div class="site-header__actions">
-      <a href="/contact/" class="btn btn--dark btn--sm">Let's Talk <span class="arrow" aria-hidden="true">→</span></a>
+      <a href="/contact/" class="btn btn--dark btn--sm site-header__cta">Let's Talk <span class="arrow" aria-hidden="true">→</span></a>
       <button type="button" class="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav" data-menu-btn>
         <span></span><span></span>
       </button>
@@ -71,7 +71,7 @@ const mainNav = nav;
   .nav-desktop { display: flex; align-items: center; gap: 4px; }
   .nav-link {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 8px 13px; border-radius: 8px; font-size: 15px; font-weight: 500; color: #2B3A45;
+    padding: 8px 13px; border-radius: 8px; font-size: 16px; font-weight: 500; color: #2B3A45;
   }
   .nav-link:hover, .nav-drop:focus-within > .nav-link, .nav-drop:hover > .nav-link { background: #F1F4F4; color: var(--ink); }
   .nav-link.is-active { color: var(--teal-dark); }
@@ -87,7 +87,7 @@ const mainNav = nav;
   }
   .nav-drop__panel::before { content: ''; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
   .nav-drop:hover .nav-drop__panel, .nav-drop:focus-within .nav-drop__panel { opacity: 1; visibility: visible; transform: none; }
-  .nav-drop__item { padding: 10px 12px; border-radius: 8px; font-size: 15px; font-weight: 500; color: #2B3A45; }
+  .nav-drop__item { padding: 10px 12px; border-radius: 8px; font-size: 16px; font-weight: 500; color: #2B3A45; }
   .nav-drop__item:hover { background: #F1F4F4; color: var(--ink); }
   .nav-drop__item.is-active { color: var(--teal-dark); }
 
@@ -119,6 +119,7 @@ const mainNav = nav;
   @media (max-width: 400px) {
     .site-header__actions .btn { display: none; }
   }
+  .site-header__cta { font-size: 16px; }
 </style>
 
 <script>
