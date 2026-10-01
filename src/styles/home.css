@@ -10,3 +10,8 @@
 /* Hero responsive rules (the design switched these in JS) */
 .hero-float{display:none !important}
 @media (min-width:1040px){.hero-visual{padding-bottom:112px}.hero-float{display:flex !important}}
+
+/* Platforms: 3 across on wide screens; 2 across with the last card full width on tablets; 1 on phones */
+.platforms-grid{display:grid;gap:20px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:720px){.platforms-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.platforms-grid>:last-child:nth-child(odd){grid-column:1/-1}}
+@media (min-width:1180px){.platforms-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.platforms-grid>:last-child:nth-child(odd){grid-column:auto}}
