@@ -32,6 +32,7 @@ export const projects: Project[] = [
     category: 'School Alliance of Texas',
     stack: 'WordPress, Elementor',
     url: 'https://texasschoolalliance.org/',
+    home: false,
   },
   {
     name: 'Poem Analysis',
