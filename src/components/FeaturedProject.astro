@@ -5,7 +5,7 @@ interface Props { project: Project; href?: string }
 const { project, href = project.url ?? '/work/' } = Astro.props;
 const external = href.startsWith('http');
 ---
-<a data-reveal href={href} class="featured-work" rel={external ? 'noopener' : undefined}>
+<a data-reveal href={href} class="featured-work" target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
   <div class="featured-work__media"><ProjectImage project={project} large /></div>
   <div class="featured-work__body">
     <span class="mono featured-work__kicker">Featured case study</span>
@@ -17,7 +17,7 @@ const external = href.startsWith('http');
         {project.outcome && <><dt>Outcome</dt><dd>{project.outcome}</dd></>}
       </dl>
     )}
-    <span class="link-arrow">View case study →</span>
+    <span class="link-arrow">{external ? 'Visit website ↗' : 'View case study →'}</span>
   </div>
 </a>
 

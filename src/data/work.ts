@@ -12,13 +12,23 @@ export type Project = {
   url?: string;
   logo?: boolean;
   featured?: boolean;
+  /** false keeps it off the homepage "Selected work" (still listed on the Work page). */
+  home?: boolean;
 };
 
+// Order = display order. The homepage shows the featured project plus the next 4 with home !== false.
 export const projects: Project[] = [
-  { name: 'Swiglife', featured: true },
+  {
+    name: 'Continental Ventures',
+    category: 'Metals trading and consultancy',
+    stack: 'WordPress, Elementor',
+    url: 'https://continentalventures.co.uk/',
+    featured: true,
+  },
+  { name: 'Swiglife' },
   { name: 'Texas School Alliance' },
   { name: 'Poem Analysis' },
-  { name: 'Groove Grub' },
-  { name: 'Play Wisconsin' },
   { name: 'Destash at the Mash', category: 'WooCommerce marketplace' },
+  { name: 'Groove Grub', home: false },
+  { name: 'Play Wisconsin', home: false },
 ];
