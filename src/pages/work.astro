@@ -15,7 +15,7 @@ const rest = projects.filter((p) => p !== featured);
   <section>
     <div class="container section stack" style="gap:clamp(24px,3vw,32px)">
       <FeaturedProject project={featured} />
-      <div class="grid-auto" style="--min:300px">
+      <div class="grid-auto" style="--min:240px">
         {rest.map((p) => <ProjectCard project={p} />)}
       </div>
     </div>

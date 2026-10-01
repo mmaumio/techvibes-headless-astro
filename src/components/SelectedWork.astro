@@ -4,7 +4,7 @@ import FeaturedProject from './FeaturedProject.astro';
 import ProjectCard from './ProjectCard.astro';
 
 const featured = projects.find((p) => p.featured) ?? projects[0];
-const rest = projects.filter((p) => p !== featured && p.home !== false).slice(0, 4);
+const rest = projects.filter((p) => p !== featured && p.home !== false);
 ---
 <section id="work" style="background:#FFFFFF">
   <div class="container section stack" style="gap:clamp(40px,5vw,56px)">
@@ -16,8 +16,23 @@ const rest = projects.filter((p) => p !== featured && p.home !== false).slice(0,
       <a href="/work/" style="font-size:16px;font-weight:500">View all work →</a>
     </div>
     <FeaturedProject project={featured} />
-    <div class="grid-auto" style="--min:240px">
+    <div class="grid-auto selected-work__grid" style="--min:240px">
       {rest.map((p) => <ProjectCard project={p} />)}
     </div>
   </div>
 </section>
+
+<style>
+  /* Five across on desktop, then 3, 2 and 1 column as the screen narrows */
+  .selected-work__grid { display: grid; gap: 20px; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  @media (max-width: 1100px) { .selected-work__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 760px) { .selected-work__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 480px) { .selected-work__grid { grid-template-columns: minmax(0, 1fr); } }
+</style>
+
+<style>
+  /* Five cards sit in one row on wide screens. */
+  @media (min-width: 1100px) {
+    .selected-work__grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  }
+</style>

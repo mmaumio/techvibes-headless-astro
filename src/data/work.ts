@@ -16,7 +16,8 @@ export type Project = {
   home?: boolean;
 };
 
-// Order = display order. The homepage shows the featured project plus the next 4 with home !== false.
+// Order = display order. The homepage shows the featured project plus every other
+// project without home: false (5 fit one row on desktop).
 export const projects: Project[] = [
   {
     name: 'Continental Ventures',
@@ -25,10 +26,31 @@ export const projects: Project[] = [
     url: 'https://continentalventures.co.uk/',
     featured: true,
   },
-  { name: 'Swiglife' },
-  { name: 'Texas School Alliance' },
-  { name: 'Poem Analysis' },
-  { name: 'Destash at the Mash', category: 'WooCommerce marketplace' },
+  { name: 'Swiglife', stack: 'Shopify', url: 'https://www.swiglife.com/' },
+  {
+    name: 'Texas School Alliance',
+    category: 'School Alliance of Texas',
+    stack: 'WordPress, Elementor',
+    url: 'https://texasschoolalliance.org/',
+  },
+  {
+    name: 'Poem Analysis',
+    category: 'Poetry analysis',
+    stack: 'WordPress, Gutenberg',
+    url: 'https://poemanalysis.com/',
+  },
+  {
+    name: 'Destash at the Mash',
+    category: 'WooCommerce marketplace',
+    stack: 'WordPress, Dokan',
+    url: 'https://destashatthemash.com/',
+  },
+  {
+    name: 'FanalytIQs',
+    category: 'Sports analytics',
+    stack: 'WordPress, custom plugin',
+    url: 'https://fanalytiqs.com/',
+  },
+  { name: 'Play Wisconsin', url: 'https://playnwisconsin.com/', home: false },
   { name: 'Groove Grub', home: false },
-  { name: 'Play Wisconsin', home: false },
 ];

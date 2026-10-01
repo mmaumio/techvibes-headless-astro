@@ -3,20 +3,30 @@ import type { Project } from '../data/work';
 import ProjectImage from './ProjectImage.astro';
 interface Props { project: Project }
 const { project } = Astro.props;
-const href = project.url ?? '/work/';
 const meta = [project.category, project.stack, project.outcome].filter(Boolean).join(' · ');
 ---
-<a data-reveal href={href} class="card project-card" rel={href.startsWith('http') ? 'noopener' : undefined}>
-  <div class="project-card__media"><ProjectImage project={project} /></div>
-  <div class="project-card__body">
-    <h3 class="h3 project-card__title">{project.name}</h3>
-    {meta && <span class="project-card__meta">{meta}</span>}
-    <span class="link-arrow" style="padding-top:6px">View case study →</span>
+{project.url ? (
+  <a data-reveal href={project.url} target="_blank" rel="noopener" class="card project-card">
+    <div class="project-card__media"><ProjectImage project={project} /></div>
+    <div class="project-card__body">
+      <h3 class="h3 project-card__title">{project.name}</h3>
+      {meta && <span class="project-card__meta">{meta}</span>}
+      <span class="link-arrow" style="padding-top:6px">Visit website ↗</span>
+    </div>
+  </a>
+) : (
+  <div data-reveal class="card project-card project-card--static">
+    <div class="project-card__media"><ProjectImage project={project} /></div>
+    <div class="project-card__body">
+      <h3 class="h3 project-card__title">{project.name}</h3>
+      {meta && <span class="project-card__meta">{meta}</span>}
+    </div>
   </div>
-</a>
+)}
 
 <style>
   .project-card { overflow: hidden; }
+  .project-card--static { display: flex; flex-direction: column; }
   .project-card__media { position: relative; aspect-ratio: 4 / 3; background: #EAF0F0; }
   .project-card__body { padding: 22px; display: flex; flex-direction: column; gap: 8px; }
   .project-card__title { font-size: 20px; letter-spacing: -0.025em; }
