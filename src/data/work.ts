@@ -52,6 +52,11 @@ export const projects: Project[] = [
     stack: 'WordPress, custom plugin',
     url: 'https://fanalytiqs.com/',
   },
-  { name: 'Play Wisconsin', url: 'https://playnwisconsin.com/', home: false },
-  { name: 'Groove Grub', home: false },
+  {
+    name: 'Groove Grub',
+    category: 'Food recipe blog',
+    stack: 'WordPress, Genesis theme',
+    url: 'https://groovegrub.com/',
+    home: false,
+  },
 ];
