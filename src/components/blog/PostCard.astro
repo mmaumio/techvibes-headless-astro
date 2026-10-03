@@ -40,7 +40,8 @@ const excerpt = excerptOf(post);
   .post-card__link:hover { color: var(--ink); }
   .post-card__cat, .post-card__author { position: relative; z-index: 2; }
 
-  .post-card__media { position: relative; aspect-ratio: 16 / 9; background: #EAF0F0; overflow: hidden; }
+  /* Featured images are 1200x630 (the social share size), so the box matches and nothing is cropped */
+  .post-card__media { position: relative; aspect-ratio: 1200 / 630; background: #EAF0F0; overflow: hidden; }
   .post-card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .post-card__body { padding: 24px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
   .post-card__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; color: var(--muted); }
@@ -54,7 +55,7 @@ const excerpt = excerptOf(post);
 
   @media (min-width: 900px) {
     .post-card--lead { grid-column: 1 / -1; display: grid; grid-template-columns: 1.15fr 1fr; }
-    .post-card--lead .post-card__media { aspect-ratio: auto; min-height: 340px; }
+    .post-card--lead .post-card__media { aspect-ratio: 1200 / 630; min-height: 0; align-self: center; }
     .post-card--lead .post-card__body { padding: clamp(28px, 4vw, 48px); justify-content: center; }
     .post-card--lead .post-card__title { font-size: clamp(28px, 3vw, 38px); letter-spacing: -0.035em; }
     .post-card--lead .post-card__excerpt { font-size: 17px; }
