@@ -29,7 +29,7 @@ const privacyPolicy = legal.find((l) => /privacy/i.test(l.label))?.href ?? '/pri
     revision: 1,
     cookie: { name: 'tv_consent', expiresAfterDays: 182, sameSite: 'Lax' },
     guiOptions: {
-      consentModal: { layout: 'box', position: 'bottom left', equalWeightButtons: true, flipButtons: false },
+      consentModal: { layout: 'box', position: 'bottom right', equalWeightButtons: true, flipButtons: false },
       preferencesModal: { layout: 'box', equalWeightButtons: true, flipButtons: false },
     },
     categories: {
