@@ -10,3 +10,4 @@
 /* Hero responsive rules (the design switched these in JS) */
 .hero-float{display:none !important}
 @media (min-width:1040px){.hero-visual{padding-bottom:112px}.hero-float{display:flex !important}}
+@media (max-width:767px){.trust-strip{flex-direction:column;justify-content:center !important;text-align:center}.trust-label{max-width:none !important}.trust-logos{flex:none !important;width:100%;justify-content:center !important;text-align:center}}
