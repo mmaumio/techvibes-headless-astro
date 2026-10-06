@@ -9,7 +9,8 @@ const API = `${WP_URL}/wp-json`;
 export const ASTRO_OWNED_SLUGS = new Set([
   'home', 'about', 'contact', 'work', 'career', 'blog',
   'wordpress-development', 'shopify-development', 'saas-app-development',
-  'mobile-app-development', 'ai-automation', 'digital-marketing',
+  'mobile-app-development', 'ai-automation', 'webflow-framer-design',
+  'digital-marketing', // retired service, now redirects to /webflow-framer-design/
   'customer-cabinet', 'schedule-a-meeting',
 ]);
 

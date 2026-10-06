@@ -61,10 +61,10 @@ export const services = [
     bullets: ['iOS', 'Android', 'Cross-platform applications', 'Deployment and optimisation'],
   },
   {
-    slug: 'digital-marketing',
-    title: 'Digital Growth',
-    short: 'Digital Marketing',
-    bullets: ['AI-powered SEO', 'Content', 'Conversion optimisation', 'Email marketing', 'Social media'],
+    slug: 'webflow-framer-design',
+    title: 'Webflow & Framer',
+    short: 'Webflow & Framer',
+    bullets: ['Webflow websites', 'Framer websites', 'Figma to Webflow or Framer', 'Platform migration', 'CMS and SEO setup'],
   },
 ] as const;
 
@@ -81,7 +81,7 @@ export const nav = [
       { label: 'SaaS App Development', href: '/saas-app-development/' },
       { label: 'Mobile App Development', href: '/mobile-app-development/' },
       { label: 'AI & Automation', href: '/ai-automation/' },
-      { label: 'Digital Marketing', href: '/digital-marketing/' },
+      { label: 'Webflow & Framer', href: '/webflow-framer-design/' },
     ],
   },
   { label: 'Career', href: '/career/' },

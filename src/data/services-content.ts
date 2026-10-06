@@ -1,4 +1,5 @@
-// Content of the six service pages, taken from the live WordPress pages.
+// Content of the six service pages, taken from the live WordPress pages
+// (Webflow & Framer replaced the retired Digital Marketing page).
 
 export type ServicePoint = { title?: string; text: string };
 export type ServiceSection = { title: string; intro?: string; points: ServicePoint[] };
@@ -236,55 +237,56 @@ export const servicePages: Record<string, ServicePage> = {
     ],
   },
 
-  'digital-marketing': {
-    slug: 'digital-marketing',
-    eyebrow: 'Digital Marketing',
-    title: 'Digital Marketing That Drives Traffic, Builds Trust, and Increases Sales',
-    metaDescription: 'Blog writing, video marketing, visual content, content repurposing and AI-powered content generation from TechVibes IT.',
+  'webflow-framer-design': {
+    slug: 'webflow-framer-design',
+    eyebrow: 'Webflow & Framer',
+    title: 'Beautiful, fast websites in Webflow and Framer that your team can update without a developer.',
+    intro: 'Your website is often the first impression of your brand. We design and build Webflow and Framer sites that look exactly as you imagined, load in a flash, and give your marketing team the freedom to publish, test, and grow on their own schedule.',
+    metaDescription: 'Webflow and Framer website design and development for UK businesses. Custom builds, Figma to Webflow or Framer, migrations, CMS and SEO setup from TechVibes IT.',
     sections: [
       {
-        title: 'Blog Writing & Optimization',
-        intro: 'Craft compelling, SEO-friendly blog content to boost organic traffic and engage your target audience effectively.',
+        title: 'Webflow Website Design & Development',
+        intro: 'A pixel-perfect Webflow site built around your brand, your content, and the customers you want to win.',
         points: [
-          { title: 'SEO Keyword Integration', text: 'Strategic placement of high-value keywords to enhance search visibility.' },
-          { title: 'Engaging Content Creation', text: 'Well-researched and captivating blogs to keep readers hooked.' },
-          { title: 'Performance Tracking & Refinement', text: 'Regular analysis and updates to maximize reach and impact.' },
+          { title: 'Bespoke Design, No Templates', text: 'Every layout is crafted for your brand and audience, so your site feels unmistakably yours on every screen size.' },
+          { title: 'Powerful Webflow CMS', text: 'Blogs, case studies, team pages, and product collections set up so your team can add and edit content in minutes.' },
+          { title: 'Clean, Scalable Build', text: 'A tidy class system and reusable components that keep your site fast today and easy to extend as you grow.' },
         ],
       },
       {
-        title: 'Video Marketing',
-        intro: "Capture your audience's attention with engaging video content optimized for YouTube, TikTok, and social media platforms.",
+        title: 'Framer Website Design',
+        intro: 'Striking, animation-rich Framer sites for launches, startups, and brands that want to stand out from the first scroll.',
         points: [
-          { title: 'Creative Scripting & Storyboarding', text: 'Craft compelling narratives that resonate with your target audience.' },
-          { title: 'Platform-Specific Optimization', text: 'Tailor videos for YouTube SEO, TikTok trends, and social media algorithms.' },
-          { title: 'Analytics & Performance Tracking', text: 'Monitor views, engagement, and conversions to refine video strategies.' },
+          { title: 'Motion That Tells Your Story', text: 'Smooth scroll effects, interactions, and micro-animations that guide visitors and make your brand memorable.' },
+          { title: 'Launch-Ready in Weeks', text: 'Ideal for landing pages, product launches, and marketing sites where speed to market really matters.' },
+          { title: 'Easy Visual Editing', text: 'Update copy, images, and pages yourself in Framer\'s visual editor, with no code and no waiting on a developer.' },
         ],
       },
       {
-        title: 'Infographic & Visual Content Creation',
-        intro: "Enhance your brand's visual presence with custom-designed infographics and shareable graphics optimized for social media and websites.",
+        title: 'Figma to Webflow & Framer',
+        intro: 'Already have a design? We turn your Figma files into a live, fully responsive website that stays true to every detail.',
         points: [
-          { title: 'Custom Infographics', text: 'Tailored designs that simplify complex information and engage your audience.' },
-          { title: 'Social Media Graphics', text: 'Eye-catching visuals that boost engagement and shareability across platforms.' },
-          { title: 'Website Visual Content', text: "Professionally designed banners, headers, and graphics that align with your brand's messaging and aesthetic." },
+          { title: 'Faithful to Your Design', text: 'Spacing, typography, colours, and interactions recreated precisely, so what you approved is exactly what goes live.' },
+          { title: 'Responsive on Every Device', text: 'Thoughtful tablet and mobile layouts, even when the design file only covers desktop.' },
+          { title: 'Smooth Hand-Off', text: 'A walkthrough and simple guide so your team feels confident managing the site from day one.' },
         ],
       },
       {
-        title: 'Content Repurposing',
-        intro: "Maximize your content's reach by transforming blogs into engaging videos, podcasts, or social media posts to capture diverse audiences.",
+        title: 'Website Migration to Webflow or Framer',
+        intro: 'Move from WordPress, Wix, or Squarespace to a modern no-code platform without losing traffic or content.',
         points: [
-          { title: 'Video Creation', text: 'Convert written content into dynamic videos to engage visual learners and boost social media presence.' },
-          { title: 'Podcast Production', text: "Turn blogs into podcasts for on-the-go listeners, expanding your content's reach through audio platforms." },
-          { title: 'Social Media Posts', text: 'Extract key insights from blogs to create shareable posts, driving more engagement and interaction.' },
+          { title: 'Content & CMS Migration', text: 'Pages, blog posts, and collections moved across carefully, with structure and formatting kept intact.' },
+          { title: 'SEO Protected', text: '301 redirects, metadata, and URL mapping handled so your search rankings carry over to the new site.' },
+          { title: 'Zero-Drama Launch', text: 'Domain, DNS, forms, and analytics configured and tested before the switch, so launch day feels effortless.' },
         ],
       },
       {
-        title: 'AI-Powered Content Generation',
-        intro: 'Leverage cutting-edge AI tools for efficient, automated content creation that aligns with your brand and engages your audience.',
+        title: 'SEO, Performance & Ongoing Support',
+        intro: 'A great website keeps working for you long after launch. We help it rank, convert, and keep improving.',
         points: [
-          { title: 'Automated Content Creation', text: 'AI-driven tools to generate high-quality, relevant content quickly and consistently.' },
-          { title: 'Customization & Personalization', text: "Tailor content to fit your brand's voice and audience preferences for maximum impact." },
-          { title: 'SEO Optimization', text: 'Ensure your content is optimized for search engines with automated keyword suggestions and structure adjustments.' },
+          { title: 'Technical SEO Foundations', text: 'Semantic structure, meta tags, schema, sitemaps, and Open Graph set up properly from the start.' },
+          { title: 'Fast Core Web Vitals', text: 'Optimised images, fonts, and scripts for quick load times that visitors and search engines reward.' },
+          { title: 'Integrations & Care Plans', text: 'Forms, CRM, analytics, and booking tools connected, plus ongoing updates and new pages whenever you need them.' },
         ],
       },
     ],
