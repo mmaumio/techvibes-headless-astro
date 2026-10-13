@@ -9,6 +9,9 @@ export const company = {
   name: 'TechVibes IT',
   legalName: 'TechVibes IT Ltd',
   companyNo: '16538075',
+  // Data protection registration with the Information Commissioner's Office.
+  icoNo: 'ZC271967',
+  icoUrl: 'https://ico.org.uk/ESDWebPages/Entry/ZC271967',
   email: 'hello@techvibesit.com',
   tagline: 'UK-based technology company specialising in AI, eCommerce, web applications, and digital transformation.',
   address: 'Innovation Centre and Business Base, 110 Great Marlings, Butterfield, Luton, LU2 8DL, United Kingdom',

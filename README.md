@@ -37,7 +37,7 @@ files show the branded placeholder.
 | File name | Where |
 |---|---|
 | `founder` | Homepage, Meet the founder |
-| `product-exclusive-addons`, `product-darkify`, `product-stockpulse` | Homepage product cards (icons/logos) |
+| `product-exclusive-addons`, `product-darkify`, `product-ariyana` | Homepage product cards (icons/logos) |
 | `work-<project-name>` e.g. `work-swiglife`, `work-texas-school-alliance` | Selected work and Work page (logos; set `logo: false` in `src/data/work.ts` for screenshots) |
 | `team-albab`, `team-muntasir`, `team-khairul` | About page team photos |
 
