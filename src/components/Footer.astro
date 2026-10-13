@@ -37,8 +37,7 @@ const companyLinks = [
     </div>
     <div class="site-footer__bottom">
       <span class="site-footer__reg">
-        © {year} {company.legalName}. Registered in England &amp; Wales, company no. {company.companyNo}.
-        <a href={company.icoUrl} rel="noopener" target="_blank" class="site-footer__ico" title="View our entry on the ICO data protection register">ICO registered: {company.icoNo}</a>
+        © {year} {company.legalName}. Registered in England &amp; Wales, company no. {company.companyNo}.<span class="site-footer__sep" aria-hidden="true">|</span><a href={company.icoUrl} rel="noopener" target="_blank" class="site-footer__ico" title="View our entry on the ICO data protection register">ICO registered: {company.icoNo}</a>
       </span>
       <div class="site-footer__legal">
         {legal.map((l) => <a href={l.href}>{l.label}</a>)}
@@ -73,6 +72,7 @@ const companyLinks = [
     padding-top: 24px; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--muted);
   }
   .site-footer__reg { line-height: 1.6; }
+  .site-footer__sep { display: inline-block; margin: 0 12px; color: var(--muted); opacity: .6; }
   .site-footer__ico { color: var(--muted); white-space: nowrap; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
   .site-footer__ico:hover { color: var(--teal-dark); text-decoration-color: currentColor; }
   .site-footer__legal { display: flex; flex-wrap: wrap; gap: 8px 24px; }
